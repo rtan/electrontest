@@ -3,6 +3,8 @@ import {remote} from "electron";
 require("golden-layout/src/css/goldenlayout-dark-theme.css");
 require("golden-layout/src/css/goldenlayout-base.css");
 
+const fancytreehtml = require("./fancytree/fancytree.html");
+
 const Menu = remote.Menu;
 const $ = require('jquery')
 const GoldenLayout = require('golden-layout');
@@ -30,7 +32,8 @@ const myLayout = new GoldenLayout({
 
 myLayout.registerComponent('test-component', function (container) {
     container.on('open', function () {
-        container.getElement().html('<div>Loading...</div>');
+        //container.getElement().load('./fancytree.html');
+        container.getElement().html(fancytreehtml);
     });
 });
 

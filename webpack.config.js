@@ -32,16 +32,20 @@ module.exports = [
                 rules: [
                     {
                         test: /\.ts$/,
-                        use: "ts-loader"
+                        use: "ts-loader",
                     },
                     {
                         test: /\.css$/,
                         use: ["style-loader", "css-loader"],
+                    },
+                    {
+                        test: /\.html$/,
+                        use: "html-loader",
                     }
                 ]
             },
         resolve: {
-            extensions: [".ts", ".js", ".css"]
+            extensions: [".ts", ".js", ".css", ".html"]
         }
     }
 ]

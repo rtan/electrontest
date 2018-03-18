@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
 require("golden-layout/src/css/goldenlayout-dark-theme.css");
 require("golden-layout/src/css/goldenlayout-base.css");
+var fancytreehtml = require("./fancytree/fancytree.html");
 var Menu = electron_1.remote.Menu;
 var $ = require('jquery');
 var GoldenLayout = require('golden-layout');
@@ -27,7 +28,8 @@ var myLayout = new GoldenLayout({
 });
 myLayout.registerComponent('test-component', function (container) {
     container.on('open', function () {
-        container.getElement().html('<div>Loading...</div>');
+        //container.getElement().load('./fancytree.html');
+        container.getElement().html(fancytreehtml);
     });
 });
 myLayout.init();
