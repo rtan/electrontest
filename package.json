@@ -1,0 +1,27 @@
+{
+  "name": "untitled3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/main.js",
+  "scripts": {
+    "tscinit": "tsc --init",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^0.28.11",
+    "electron": "^1.8.4",
+    "style-loader": "^0.20.3",
+    "ts-loader": "^4.0.1",
+    "typescript": "^2.7.2",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
+  },
+  "dependencies": {
+    "golden-layout": "^1.5.9",
+    "jquery.fancytree": "^2.28.0"
+  }
+}
