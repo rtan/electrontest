@@ -1,66 +1,38 @@
-import {remote} from "electron";
+import GoldenLayout from "golden-layout";
+import FancyTest from "./fancy";
 
-require("golden-layout/src/css/goldenlayout-dark-theme.css");
-require("golden-layout/src/css/goldenlayout-base.css");
+require("golden-layout/src/css/goldenlayout-base.css")
+require("golden-layout/src/css/goldenlayout-light-theme.css")
 
-const fancytreehtml = require("./fancytree/fancytree.html");
-
-const Menu = remote.Menu;
-const $ = require('jquery')
-const GoldenLayout = require('golden-layout');
-
-window.$ = $;
-
-const myLayout = new GoldenLayout({
+var config = {
     content: [{
         type: 'row',
         content: [{
             type: 'component',
-            componentName: 'test-component'
+            componentName: 'testComponent',
+            componentState: {label: 'B'}
         }, {
             type: 'component',
-            componentName: 'test-component'
-        }, {
-            type: 'component',
-            componentName: 'test-component'
-        }, {
-            type: 'component',
-            componentName: 'test-component'
+            componentName: 'testComponent2',
+            componentState: {label: 'C'}
         }]
     }]
+};
+
+var myLayout = new GoldenLayout(config);
+
+let fancyTest = new FancyTest("tree1");
+
+var html2 = require("./fancy2.html");
+
+myLayout.registerComponent('testComponent', function (container, componentState) {
+    fancyTest.load(container.getElement());
 });
 
-myLayout.registerComponent('test-component', function (container) {
-    container.on('open', function () {
-        //container.getElement().load('./fancytree.html');
-        container.getElement().html(fancytreehtml);
-    });
+myLayout.registerComponent('testComponent2', function (container, componentState) {
+    container.getElement().html(html2);
 });
 
-myLayout.init()
+myLayout.init();
 
-Menu.setApplicationMenu(Menu.buildFromTemplate([
-    {
-        label: "View",
-        submenu: [
-            {
-                label: "Tree Window",
-                click() {
-                    myLayout.root.contentItems[0].addChild({
-                        type: "component",
-                        componentName: "test-component",
-                    })
-                }
-            },
-            {
-                label: "Tree Window2",
-                click() {
-                    myLayout.root.contentItems[0].addChild({
-                        type: "component",
-                        componentName: "test-component"
-                    })
-                }
-            }
-        ]
-    }
-]))
+require("./fancy2.ts");

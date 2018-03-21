@@ -39,13 +39,21 @@ module.exports = [
                         use: ["style-loader", "css-loader"],
                     },
                     {
+                        test: /\.less$/,
+                        use: ["style-loader", "css-loader", "less-loader"],
+                    },
+                    {
                         test: /\.html$/,
                         use: "html-loader",
+                    },
+                    {
+                        test: /\.(jpg|png|gif)$/,
+                        use: "url-loader",
                     }
                 ]
             },
         resolve: {
-            extensions: [".ts", ".js", ".css", ".html"]
+            extensions: [".ts", ".js", ".css", ".html", ".less", ".gif"]
         }
     }
 ]

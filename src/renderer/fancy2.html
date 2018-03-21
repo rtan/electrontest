@@ -1,0 +1,46 @@
+<style type="text/css">
+    .tanaka {
+        border: 1px solid #999;
+    }
+
+    .tanaka tr {
+        border: 1px solid #999;
+    }
+
+    .tanaka th {
+        border: 1px solid #999;
+        background-color: #bbb;
+    }
+
+    .tanaka td {
+        border: 1px solid #999;
+    }
+</style>
+<div>
+    検索 : <input name="search" placeholder="Filter..." autocomplete="off">
+    <button id="toggleExpand2">Expand/Collapse</button>
+    <button id="saveBtn2">Save</button>
+    <button id="loadBtn2">Load</button>
+    <table id="tree2" class="tanaka" data-resizable-columns-id="demo-table">
+        <colgroup>
+            <col width="350px">
+            <col width="200px">
+            <col width="200px">
+        </colgroup>
+        <thead>
+        <tr>
+            <th data-resizable-column-id="node">ノード</th>
+            <th data-resizable-column-id="c#">C#</th>
+            <th data-resizable-column-id="php">PHP</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Define a row template for all invariant markup: -->
+        <tr>
+            <td class="alignCenter"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
