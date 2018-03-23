@@ -1,9 +1,11 @@
+var path = require("path");
+
 module.exports = [
     {
         mode:
             "development",
         entry:
-            "./src/main/main.ts",
+            "./src/orbi/main/main.ts",
         target:
             "electron-main",
         module:
@@ -22,7 +24,7 @@ module.exports = [
     },
     {
         mode: "development",
-        entry: "./src/renderer/index.ts",
+        entry: "./src/orbi/renderer/index.ts",
         output: {
             filename: "renderer.js"
         },
@@ -53,7 +55,10 @@ module.exports = [
                 ]
             },
         resolve: {
-            extensions: [".ts", ".js", ".css", ".html", ".less", ".gif"]
+            extensions: [".ts", ".js", ".css", ".html", ".less", ".gif"],
+            alias: {
+                orbi: path.resolve(__dirname, './src/orbi')
+            }
         }
     }
 ]

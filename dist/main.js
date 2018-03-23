@@ -66,20 +66,20 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/main/main.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/orbi/main/main.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/main/main.ts":
-/*!**************************!*\
-  !*** ./src/main/main.ts ***!
-  \**************************/
+/***/ "./src/orbi/main/main.ts":
+/*!*******************************!*\
+  !*** ./src/orbi/main/main.ts ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar electron_1 = __webpack_require__(/*! electron */ \"electron\");\r\nvar MyApp = /** @class */ (function () {\r\n    function MyApp(app) {\r\n        var _this = this;\r\n        this.app = app;\r\n        this.mainWindow = null;\r\n        this.app.on('window-all-closed', function () {\r\n            if (process.platform != 'darwin') {\r\n                setTimeout(function () {\r\n                    _this.app.quit();\r\n                }, 50);\r\n            }\r\n        });\r\n        this.app.on('ready', function () {\r\n            _this.mainWindow = new electron_1.BrowserWindow({ width: 1500, height: 2000, });\r\n            _this.mainWindow.on('closed', function (event) {\r\n                _this.mainWindow = null;\r\n            });\r\n            _this.mainWindow.loadURL(\"file://\" + app.getAppPath() + \"/dist/index.html\");\r\n            _this.mainWindow.webContents.openDevTools();\r\n        });\r\n    }\r\n    return MyApp;\r\n}());\r\nexports.myapp = new MyApp(electron_1.app);\r\n\n\n//# sourceURL=webpack:///./src/main/main.ts?");
+eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar electron_1 = __webpack_require__(/*! electron */ \"electron\");\r\nvar MyApp = /** @class */ (function () {\r\n    function MyApp(app) {\r\n        var _this = this;\r\n        this.app = app;\r\n        this.mainWindow = null;\r\n        this.app.on('window-all-closed', function () {\r\n            if (process.platform != 'darwin') {\r\n                setTimeout(function () {\r\n                    _this.app.quit();\r\n                }, 50);\r\n            }\r\n        });\r\n        this.app.on('ready', function () {\r\n            _this.mainWindow = new electron_1.BrowserWindow({ width: 1500, height: 2000, });\r\n            _this.mainWindow.on('closed', function (event) {\r\n                _this.mainWindow = null;\r\n            });\r\n            _this.mainWindow.loadURL(\"file://\" + app.getAppPath() + \"/dist/index.html\");\r\n            _this.mainWindow.webContents.openDevTools();\r\n        });\r\n    }\r\n    return MyApp;\r\n}());\r\nexports.myapp = new MyApp(electron_1.app);\r\n\n\n//# sourceURL=webpack:///./src/orbi/main/main.ts?");
 
 /***/ }),
 

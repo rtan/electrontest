@@ -1,5 +1,9 @@
 // Import LESS or CSS:
 import 'jquery.fancytree/dist/skin-lion/ui.fancytree.less'
+import FancytreeNode = Fancytree.FancytreeNode;
+import Util from "orbi/renderer/util";
+
+const remote = require("electron").remote;
 
 const $ = require('jquery');
 window.jQuery = $;
@@ -11,7 +15,7 @@ require('jquery.fancytree/dist/modules/jquery.fancytree.edit');
 require('jquery.fancytree/dist/modules/jquery.fancytree.filter');
 require('jquery.fancytree/dist/modules/jquery.fancytree.dnd');
 //require('jquery.fancytree/dist/modules/jquery.fancytree.dnd5');
-require('jquery.fancytree/dist/modules/jquery.fancytree.multi');
+require('./jquery.fancytree.multi.custom');
 require('jquery.fancytree/dist/modules/jquery.fancytree.gridnav');
 require('jquery.fancytree/dist/modules/jquery.fancytree.table');
 
@@ -20,56 +24,63 @@ require("jquery-ui/themes/base/all.css");
 
 require("store");
 require("jquery-resizable-columns");
-require("jquery-resizable-columns/dist/jquery.resizableColumns.css")
+require("jquery-resizable-columns/dist/jquery.resizableColumns.css");
+
+// todo GPL and MIT (https://github.com/alvaro-prieto/colResizable/issues/70)
+require("colresizable/colResizable-1.6.min.js");
 
 const storage = require("electron-json-storage");
-const j = require("./ajax-tree-products.json");
-
-console.log(fancytree.version);
 
 export default class FancyTest {
-    constructor(private id: string) {
+    constructor(public readonly id: string) {
     }
 
     public load(elem: any) {
         let html = require("./fancy.html");
-        html = html.replace("##fancyTableName##", this.id);
+        html = html.replace(/##fancyTableName##/g, this.id);
         elem.html(html);
         this.initTree();
     }
 
+    public resize(container){
+        $("#div_"+this.id).height(container.getElement().height() - 50);
+        $("#"+this.id).height(container.getElement().height() - 50);
+        $("#"+this.id).width(container.getElement().width());
+    }
+
     private initTree() {
-        // todo: this.idが参照できないと思うので修正
+        let id = this.id;
         $(function () {
             var clipboard;
             var source = [
                 {
-                    title: "node 1", folder: true, expanded: true, children: [
-                        {title: "node 1.1", foo: "a"},
-                        {title: "node 1.2", foo: "b"}
+                    title: "node 1", folder: true, expanded: true, name: "a", children: [
+                        {title: "node 1.1", name: "a"},
+                        {title: "node 1.2", name: "b"}
                     ]
                 },
                 {
-                    title: "node 2", folder: true, expanded: false, children: [
-                        {title: "node 2.1", foo: "c"},
-                        {title: "node 2.2", foo: "d"}
+                    title: "node 2", folder: true, expanded: false, name: "a", children: [
+                        {title: "node 2.1", name: "c"},
+                        {title: "node 2.2", name: "d"}
                     ]
                 }
             ];
 
             var tree;
 
-            $("#" + this.id).fancytree({
+            $("#" + id).fancytree({
                 //checkbox: true,
-                titlesTabbable: true,     // Add all node titles to TAB chain
-                quicksearch: true,        // Jump to nodes when pressing first character
-                clickFolderMode: 2,
+                titlesTabbable: true,
+                quicksearch: true,
+                clickFolderMode: 4,
+                autoScroll: true,
                 source: source,
-                //source: JSON.stringify(j),
-
                 extensions: ["edit", "dnd", "table", "gridnav", "filter", "multi"],
-                //extensions: ["edit", "dnd5", "multi", "table", "gridnav", "filter"],
-
+                //extensions: ["edit", "dnd", "table", "gridnav", "filter"],
+                multi:{
+                    mode: "sameParent"
+                },
                 filter: {
                     autoApply: true,   // Re-apply last filter if lazy data is loaded
                     autoExpand: true, // Expand all branches that contain matches while filtered
@@ -82,21 +93,6 @@ export default class FancyTest {
                     nodata: true,      // Display a 'no data' status node if result is empty
                     mode: "hide"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
                 },
-                // dnd: {
-                //     preventVoidMoves: true,
-                //     preventRecursiveMoves: true,
-                //     autoExpandMS: 400,
-                //     dragStart: function (node, data) {
-                //         return true;
-                //     },
-                //     dragEnter: function (node, data) {
-                //         // return ["before", "after"];
-                //         return true;
-                //     },
-                //     dragDrop: function (node, data) {
-                //         data.otherNode.moveTo(node, data.hitMode);
-                //     }
-                // },
                 dnd: {
                     preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
                     preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
@@ -133,7 +129,7 @@ export default class FancyTest {
                         // Mark selected nodes also as drag source (active node is already)
 
                         //$(".fancytree-active,.fancytree-selected", tree.$container)
-                        $(".fancytree-active,.fancytree-selected", $("#" + this.id).$container)
+                        $(".fancytree-active,.fancytree-selected", $("#" + id).$container)
                             .addClass("fancytree-drag-source");
                         // Add a counter badge to helper if dragging more than one node
                         if (sourceNodes.length > 1) {
@@ -188,76 +184,9 @@ export default class FancyTest {
                         }
                     }
                 },
-                // dnd5: {
-                //     preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-                //     preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-                //     autoExpandMS: 1000,
-                //     multiSource: true,  // drag all selected nodes (plus current node)
-                //     // focusOnClick: true,
-                //     // refreshPositions: true,
-                //     dragStart: function (node, data) {
-                //         // allow dragging `node`:
-                //         data.dataTransfer.dropEffect = "move";
-                //         return true;
-                //     },
-                //     // dragDrag: function(node, data) {
-                //     //   data.node.info("dragDrag", data);
-                //     //   data.dataTransfer.dropEffect = "copy";
-                //     //   return true;
-                //     // },
-                //     dragEnter: function (node, data) {
-                //         data.node.info("dragEnter", data);
-                //         data.dataTransfer.dropEffect = "link";
-                //         return true;
-                //     },
-                //     // dragOver: function(node, data) {
-                //     //   data.node.info("dragOver", data);
-                //     //   data.dataTransfer.dropEffect = "link";
-                //     //   return true;
-                //     // },
-                //     dragEnd: function (node, data) {
-                //         data.node.info("dragEnd", data);
-                //     },
-                //     dragDrop: function (node, data) {
-                //         // This function MUST be defined to enable dropping of items on the tree.
-                //         //
-                //         // The source data is provided in several formats:
-                //         //   `data.otherNode` (null if it's not a FancytreeNode from the same page)
-                //         //   `data.otherNodeData` (Json object; null if it's not a FancytreeNode)
-                //         //   `data.dataTransfer.getData()`
-                //         //
-                //         // We may access some meta data to decide what to do:
-                //         //   `data.hitMode` ("before", "after", or "over").
-                //         //   `data.dataTransfer.dropEffect`, `.effectAllowed`
-                //         //   `data.originalEvent.shiftKey`, ...
-                //         //
-                //         // Example:
-                //
-                //         var dataTransfer = data.dataTransfer,
-                //             sourceNodes = data.otherNodeList,
-                //             event = data.originalEvent,
-                //             copyMode = event.ctrlKey || event.altKey;
-                //
-                //         if (copyMode) {
-                //             $.each(sourceNodes, function (i, o) {
-                //                 o.copyTo(node, data.hitMode, function (n) {
-                //                     delete n.key;
-                //                     n.selected = false;
-                //                     n.title = "Copy of " + n.title;
-                //                 });
-                //             });
-                //         } else {
-                //             $.each(sourceNodes, function (i, o) {
-                //                 o.moveTo(node, data.hitMode);
-                //             });
-                //         }
-                //         node.debug("drop", data);
-                //         node.setExpanded();
-                //     }
-                // },
                 edit: {
                     //triggerStart: ["f2", "shift+click", "mac+enter"],
-                    triggerStart: ["clickActive", "dblclick", "f2", "mac+enter"],
+                    triggerStart: ["clickActive", "f2", "mac+enter"],
                     beforeEdit: function (event, data) {
                         console.log(event);
                         return true;
@@ -265,7 +194,7 @@ export default class FancyTest {
                     close: function (event, data) {
                         if (data.save && data.isNew) {
                             // Quick-enter: add new nodes until we hit [enter] on an empty title
-                            $("#" + this.id).trigger("nodeCommand", {cmd: "addSibling"});
+                            $("#" + id).trigger("nodeCommand", {cmd: "addSibling"});
                         }
                     }
                 },
@@ -275,7 +204,7 @@ export default class FancyTest {
                     //checkboxColumnIdx: 0
                 },
                 gridnav: {
-                    autofocusInput: false,
+                    autofocusInput: true,
                     handleCursorKeys: true
                 },
 
@@ -285,31 +214,11 @@ export default class FancyTest {
                 createNode: function (event, data) {
                     var node = data.node,
                         $tdList = $(node.tr).find(">td");
-
-                    // Span the remaining columns if it's a folder.
-                    // We can do this in createNode instead of renderColumns, because
-                    // the `isFolder` status is unlikely to change later
-                    if (node.isFolder()) {
-                        $tdList.eq(2)
-                            .prop("colspan", 6)
-                            .nextAll().remove();
-                    }
                 },
                 renderColumns: function (event, data) {
                     var node = data.node,
                         $tdList = $(node.tr).find(">td");
-
-                    // (Index #0 is rendered by fancytree by adding the checkbox)
-                    // Set column #1 info from node data:
-                    //$tdList.eq(1).text(node.getIndexHier());
-                    // (Index #2 is rendered by fancytree)
-                    // Set column #3 info from node data:
-                    //$tdList.eq(0).find("input").val(node.key);
-                    //$tdList.eq(1).find("input").val(node.data.foo);
-
-                    // Static markup (more efficiently defined as html row template):
-                    // $tdList.eq(3).html("<input type='input' value='" + "" + "'>");
-                    // ...
+                    $tdList.eq(1).find("input").val(node.data.name);
                 }
             }).on("nodeCommand", function (event, data) {
                 // Custom event handler that is triggered by keydown-handler and
@@ -357,11 +266,11 @@ export default class FancyTest {
                             refNode.setActive();
                         }
                         break;
-                    case "addChild":
-                        node.editCreateNode("child", "");
-                        break;
                     case "addSibling":
-                        node.editCreateNode("after", "");
+                        node.editCreateNode("after", { key: Util.makeUniqueId(), title: ""});
+                        break;
+                    case "addGroup":
+                        node.editCreateNode("after", { key: Util.makeUniqueId(), title: "", folder: true, expanded: false});
                         break;
                     case "cut":
                         clipboard = {mode: data.cmd, data: node};
@@ -400,10 +309,6 @@ export default class FancyTest {
 
                 console.log(e.type, $.ui.fancytree.eventToString(e));
                 switch ($.ui.fancytree.eventToString(e)) {
-                    case "ctrl+shift+n":
-                    case "meta+shift+n": // mac: cmd+shift+n
-                        cmd = "addChild";
-                        break;
                     case "ctrl+c":
                     case "meta+c": // mac
                         cmd = "copy";
@@ -419,6 +324,10 @@ export default class FancyTest {
                     case "ctrl+n":
                     case "meta+n": // mac
                         cmd = "addSibling";
+                        break;
+                    case "ctrl+g":
+                    case "meta+g": // mac
+                        cmd = "addGroup";
                         break;
                     case "del":
                     case "meta+backspace": // mac
@@ -449,35 +358,60 @@ export default class FancyTest {
                 }
             });
 
-            $("#" + this.id).resizableColumns({
-                store: window.store
-            });
+            // $("#" + id).resizableColumns({
+            //     store: window.store
+            // });
 
             /*
              * Tooltips
              */
-            // $("#" + this.id).tooltip({
+            // $("#" + id).tooltip({
             //     content: function () {
             //         return $(this).attr("title");
             //     }
             // });
+            $("#" + id).colResizable({
+                resizeMode:'flex',
+                partialRefresh: true,
+                liveDrag: true,
+                onDrag: () => {
+                    $("#treeNodeTd").width($("#treeNodeTh").width());
+                    $("#treeNameTd").width($("#treeNameTh").width());
+                    $("#treeCsTd").width($("#treeCsTh").width());
+                    $("#treePhpTd").width($("#treePhpTh").width());
+                    $("#treeTypeTd").width($("#treeTypeTh").width());
+                    $("#treeMinTd").width($("#treeMinTh").width());
+                    $("#treeMaxTd").width($("#treeMaxTh").width());
+                    $("#treeDefTd").width($("#treeDefTh").width());
+                },
+                // onResize:()=>{
+                //     $("#treeNodeTh").width($("#treeNodeTd").width());
+                //     $("#treeNameTh").width($("#treeNameTd").width());
+                //     $("#treeCsTh").width($("#treeCsTd").width());
+                //     $("#treePhpTh").width($("#treePhpTd").width());
+                //     $("#treeTypeTh").width($("#treeTypeTd").width());
+                //     $("#treeMinTh").width($("#treeMinTd").width());
+                //     $("#treeMaxTh").width($("#treeMaxTd").width());
+                //     $("#treeDefTh").width($("#treeDefTd").width());
+                // }
+            });
 
             /*
              * Context menu (https://github.com/mar10/jquery-ui-contextmenu)
              */
-            $("#" + this.id).contextmenu({
+            $("#" + id).contextmenu({
                 delegate: "span.fancytree-node",
                 menu: [
-                    {title: "Edit <kbd>[F2]</kbd>", cmd: "rename", uiIcon: "ui-icon-pencil"},
-                    {title: "Delete <kbd>[Del]</kbd>", cmd: "remove", uiIcon: "ui-icon-trash"},
+                    {title: "編集 <kbd>[F2]</kbd>", cmd: "rename", uiIcon: "ui-icon-pencil"},
+                    {title: "削除 <kbd>[Del]</kbd>", cmd: "remove", uiIcon: "ui-icon-trash"},
                     {title: "----"},
-                    {title: "New sibling <kbd>[Ctrl+N]</kbd>", cmd: "addSibling", uiIcon: "ui-icon-plus"},
-                    {title: "New child <kbd>[Ctrl+Shift+N]</kbd>", cmd: "addChild", uiIcon: "ui-icon-arrowreturn-1-e"},
+                    {title: "ノードグループ作成 <kbd>[Ctrl+G]</kbd>", cmd: "addGroup", uiIcon: "ui-icon-plus"},
+                    {title: "ノード作成 <kbd>[Ctrl+N]</kbd>", cmd: "addSibling", uiIcon: "ui-icon-plus"},
                     {title: "----"},
-                    {title: "Cut <kbd>Ctrl+X</kbd>", cmd: "cut", uiIcon: "ui-icon-scissors"},
-                    {title: "Copy <kbd>Ctrl-C</kbd>", cmd: "copy", uiIcon: "ui-icon-copy"},
+                    {title: "切り取り <kbd>Ctrl+X</kbd>", cmd: "cut", uiIcon: "ui-icon-scissors"},
+                    {title: "コピー <kbd>Ctrl-C</kbd>", cmd: "copy", uiIcon: "ui-icon-copy"},
                     {
-                        title: "Paste as child<kbd>Ctrl+V</kbd>",
+                        title: "貼り付け<kbd>Ctrl+V</kbd>",
                         cmd: "paste",
                         uiIcon: "ui-icon-clipboard",
                         disabled: true
@@ -485,7 +419,7 @@ export default class FancyTest {
                 ],
                 beforeOpen: function (event, ui) {
                     var node = $.ui.fancytree.getNode(ui.target);
-                    $("#" + this.id).contextmenu("enableEntry", "paste", !!clipboard);
+                    $("#" + id).contextmenu("enableEntry", "paste", !!clipboard);
                     node.setActive();
                 },
                 select: function (event, ui) {
@@ -498,13 +432,14 @@ export default class FancyTest {
                 }
             });
 
-            $("input[name=search]").keyup(function (e) {
+            $("input[name=search_"+id+"]").keyup(function (e) {
                 var n,
-                    tree = $.ui.fancytree.getTree(),
+                    //tree = $.ui.fancytree.getTree(),
+                    tree = $("#" + id).fancytree("getTree"),
                     args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "),
                     opts: any = {},
                     //filterFunc = $("#branchMode").is(":checked") ? tree.filterBranches : tree.filterNodes,
-                    filterFunc = tree.filterNodes,
+                    filterFunc = tree.filterBranches,
                     match = $(this).val();
 
                 $.each(args, function (i, o) {
@@ -530,25 +465,50 @@ export default class FancyTest {
             }).focus();
 
             let expandedAll = false;
-            $("#toggleExpand").on("click", () => {
+            $("#toggleExpand_"+id).on("click", () => {
                 expandedAll = !expandedAll;
-                $("#" + this.id).fancytree("getTree").visit(node => {
+                $("#" + id).fancytree("getTree").visit(node => {
                     node.setExpanded(expandedAll);
                 });
             });
 
-            $("#saveBtn").on("click", () => {
-                let tree = $("#" + this.id).fancytree("getTree");
-                let d = tree.toDict(true);
-                storage.set("tree", JSON.stringify(d), error => {
+            $("#saveBtn_"+id).on("click", () => {
+                let tree: Fancytree.Fancytree = $("#" + id).fancytree("getTree");
+                let d = tree.toDict(true, (node: FancytreeNode) => {
+                    const n = tree.getNodeByKey(node.key);
+                    if(n.tr) {
+                        const $tdList = $(n.tr).find(">td");
+                        if(!node.data){
+                            node.data = {};
+                        }
+                        node.data.name = $tdList.eq(1).find("input").val();
+                    }
+                });
+                const json = JSON.stringify(d);
+                storage.set("tree", json, error => {
+                    if(error) {
+                        alert("保存に失敗しました。");
+                        throw error;
+                    }
                 });
             });
 
-            $("#loadBtn").on("click", function () {
+            $("#loadBtn_"+id).on("click", function () {
                 storage.get("tree", (error, data) => {
-                    $("#" + this.id).fancytree("option", "source", JSON.parse(data));
+                    if(error) {
+                        alert("読み込みに失敗しました。");
+                        throw error;
+                    }
+                    $("#" + id).fancytree("option", "source", JSON.parse(data));
                 });
             });
+
+            $("#settingsBtn_"+id).on("click", ()=>{
+                //$("#settingsDialog").showModal();
+                let dlg: any = document.getElementById("settingsDialog");
+                dlg.show();
+            });
+
         });
     }
 }

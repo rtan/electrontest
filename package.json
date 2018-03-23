@@ -28,6 +28,9 @@
     "webpack-cli": "^2.0.12"
   },
   "dependencies": {
+    "@types/jquery": "^3.3.1",
+    "@types/jquery.fancytree": "^2.7.33",
+    "colresizable": "^1.6.0",
     "electron-json-storage": "^4.0.2",
     "golden-layout": "^1.5.9",
     "jquery-resizable-columns": "^0.2.3",
