@@ -1,6 +1,13 @@
 import electron from "electron";
 import GoldenLayout from "golden-layout";
 import FancyTest from "./fancy";
+import {Fancy} from "orbi/renderer/component/fancy/fancy";
+
+import React from "react";
+import ReactDOM from "react-dom";
+
+window.React = React;
+window.ReactDOM = ReactDOM;
 
 const menu = electron.remote.Menu;
 menu.setApplicationMenu(menu.buildFromTemplate(
@@ -10,7 +17,8 @@ menu.setApplicationMenu(menu.buildFromTemplate(
             submenu: [
                 {
                     label: '終了',
-                    click () { }
+                    click() {
+                    }
                 },
             ]
         },
@@ -19,8 +27,18 @@ menu.setApplicationMenu(menu.buildFromTemplate(
             submenu: [
                 {
                     label: 'Fancy',
-                    click () {
-                        myLayout.root.contentItems[0].addChild({type:"component", componentName:"fancytree"});
+                    click() {
+                        myLayout.root.contentItems[0].addChild({type: "component", componentName: "fancytree"});
+                    }
+                },
+                {
+                    label: 'React',
+                    click() {
+                        myLayout.root.contentItems[0].addChild({
+                            type: "react-component",
+                            component: "reacttest",
+                            props: {id: "1"}
+                        });
                     }
                 }
             ]
@@ -28,15 +46,15 @@ menu.setApplicationMenu(menu.buildFromTemplate(
         {
             label: 'デバッグ',
             submenu: [
-                { role: 'reload' },
-                { role: 'forcereload' },
-                { role: 'toggledevtools' },
-                { type: 'separator' },
-                { role: 'resetzoom' },
-                { role: 'zoomin' },
-                { role: 'zoomout' },
-                { type: 'separator' },
-                { role: 'togglefullscreen' }
+                {role: 'reload'},
+                {role: 'forcereload'},
+                {role: 'toggledevtools'},
+                {type: 'separator'},
+                {role: 'resetzoom'},
+                {role: 'zoomin'},
+                {role: 'zoomout'},
+                {type: 'separator'},
+                {role: 'togglefullscreen'}
             ]
         }
     ]
@@ -48,9 +66,14 @@ require("golden-layout/src/css/goldenlayout-light-theme.css")
 var config = {
     content: [{
         type: 'row',
+        // content: [{
+        //     type: 'component',
+        //     componentName: 'fancytree',
+        // }],
         content: [{
-            type: 'component',
-            componentName: 'fancytree',
+            type: 'react-component',
+            component: 'reacttest',
+            props: {id: 1},
         }]
     }]
 };
@@ -59,12 +82,12 @@ const myLayout = new GoldenLayout(config);
 
 let count = 1;
 myLayout.registerComponent("fancytree", function (container, componentState) {
-    const fancyTest = new FancyTest("tree"+count);
+    const fancyTest = new FancyTest("tree" + count);
     fancyTest.load(container.getElement());
-    container.on("resize", ()=>{
+    container.on("resize", () => {
         fancyTest.resize(container);
     });
     count++;
 });
-
+myLayout.registerComponent("reacttest", Fancy);
 myLayout.init();

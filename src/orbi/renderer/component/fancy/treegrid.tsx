@@ -1,9 +1,13 @@
-// Import LESS or CSS:
+import * as React from "react";
+
 import 'jquery.fancytree/dist/skin-lion/ui.fancytree.less'
 import FancytreeNode = Fancytree.FancytreeNode;
 import Util from "orbi/renderer/util";
+import {Setting} from "orbi/renderer/component/fancy/setting";
 
 const remote = require("electron").remote;
+
+const storage = require("electron-json-storage");
 
 const $ = require('jquery');
 window.jQuery = $;
@@ -15,7 +19,7 @@ require('jquery.fancytree/dist/modules/jquery.fancytree.edit');
 require('jquery.fancytree/dist/modules/jquery.fancytree.filter');
 require('jquery.fancytree/dist/modules/jquery.fancytree.dnd');
 //require('jquery.fancytree/dist/modules/jquery.fancytree.dnd5');
-require('./jquery.fancytree.multi.custom');
+require('orbi/renderer/jquery.fancytree.multi.custom');
 require('jquery.fancytree/dist/modules/jquery.fancytree.gridnav');
 require('jquery.fancytree/dist/modules/jquery.fancytree.table');
 
@@ -29,36 +33,117 @@ require("jquery-resizable-columns/dist/jquery.resizableColumns.css");
 // todo GPL and MIT (https://github.com/alvaro-prieto/colResizable/issues/70)
 require("colresizable/colResizable-1.6.min.js");
 
-const storage = require("electron-json-storage");
+require("orbi/renderer/component/fancy/fancy.css");
 
-    export default class FancyTest {
-        private parentElem: any;
+export interface TreeGridProps {
+    // todo golden-layout type definition
+    glContainer: any;
 
-    constructor(public readonly id: string) {
+    id: string;
+    onReload: () => void;
+}
+
+export interface TreeGridState {
+
+}
+
+export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
+    private parentElem: any;
+    private id: number;
+
+    refs: {
+        setting: any
+    };
+
+    constructor(props: TreeGridProps) {
+        super(props);
+        this.id = +props.id;
+        this.load(this.props.glContainer.parent);
     }
 
-    public load(elem: any) {
-        this.parentElem = elem;
-        let html = require("./fancy.html");
-        html = html.replace(/##fancyTableName##/g, this.id);
-        elem.html(html);
+    render() {
+        return (
+            <div id="fancyTest">
+                <Setting ref="setting" onOk={() => {
+                    this.settingsOk();
+                }}/>
+                <div className="fancytest">
+                    <div>
+                        検索 : <input name={`search_${this.props.id}`} placeholder="Filter..."/>
+                        <button id={`toggleExpand_${this.props.id}`}>Expand/Collapse</button>
+                        <button id={`saveBtn_${this.props.id}`}>Save</button>
+                        <button id={`loadBtn_${this.props.id}`}>Load</button>
+                        <button id={`settingsBtn_${this.props.id}`}>Settings</button>
+                        <button id={`reload_${this.props.id}`}>Reload</button>
+                    </div>
+                    <div id={`div_${this.props.id}`}>
+                        <table id={`${this.props.id}`} className="tanaka">
+                            <thead className="fancytest">
+                            <tr>
+                                <th id="treeNodeTh" style={{minWidth: "250px", maxWidth: "250px"}}>ノード</th>
+                                <th id="treeNameTh" style={{minWidth: "180px"}}>名称</th>
+                                <th id="treeCsTh" style={{minWidth: "30px", maxWidth: "30px"}}>C#</th>
+                                <th id="treePhpTh" style={{minWidth: "30px", maxWidth: "30px"}}>PHP</th>
+                                <th id="treeTypeTh" style={{minWidth: "50px"}}>型</th>
+                                <th id="treeMinTh" style={{minWidth: "70px"}}>最小値</th>
+                                <th id="treeMaxTh" style={{minWidth: "70px"}}>最大値</th>
+                                <th id="treeDefTh" style={{minWidth: "70px"}}>ﾃﾞﾌｫﾙﾄ値</th>
+                            </tr>
+                            </thead>
+                            <tbody className="fancytest">
+                            <tr>
+                                <td id="treeNodeTd" style={{minWidth: "250px", maxWidth: "250px"}}
+                                    className="alignCenter"/>
+                                <td id="treeNameTd" style={{minWidth: "180px"}}>
+                                    <input type="text" name="name" title="name" style={{width: "98%"}}/>
+                                </td>
+                                <td id="treeCsTd" style={{minWidth: "30px", maxWidth: "30px"}}/>
+                                <td id="treePhpTd" style={{minWidth: "30px", maxWidth: "30px"}}/>
+                                <td id="treeTypeTd" style={{minWidth: "50px"}}/>
+                                <td id="treeMinTd" style={{minWidth: "70px"}}/>
+                                <td id="treeMaxTd" style={{minWidth: "70px"}}/>
+                                <td id="treeDefTd" style={{minWidth: "70px"}}/>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    public load(elem: any = null) {
+        if (elem != null) {
+            this.parentElem = elem;
+        }
         this.initTree();
+        this.parentElem.container.on("resize", () => this.resize());
     }
 
-    public reload() {
-        $("#fancyTest").remove();
-        this.load(this.parentElem);
-    }
-
-    public resize(container) {
+    public resize() {
+        let container = this.props.glContainer;
         $("#div_" + this.id).height(container.getElement().height() - 50);
         $("#" + this.id).height(container.getElement().height() - 50);
         $("#" + this.id).width(container.getElement().width());
     }
 
+    public settingsOk() {
+        storage.set("settings", JSON.stringify({
+            "settingsNameDisp": $("#settingsNameDisp").prop("checked"),
+            "settingsPhpDisp": $("#settingsPhpDisp").prop("checked"),
+            "settingsCsDisp": $("#settingsCsDisp").prop("checked"),
+            "settingsTypeDisp": $("#settingsTypeDisp").prop("checked"),
+            "settingsMinDisp": $("#settingsMinDisp").prop("checked"),
+            "settingsMaxDisp": $("#settingsMaxDisp").prop("checked"),
+            "settingsDefaultDisp": $("#settingsDefaultDisp").prop("checked"),
+        }), (error) => {
+            this.props.onReload();
+        });
+    }
+
+
     private initTree() {
         let id = this.id;
-        let reload = this.reload;
         $(() => {
             storage.get("settings", (error, data) => {
                 if (data) {
@@ -88,8 +173,8 @@ const storage = require("electron-json-storage");
                         $("#treeMaxTd").remove();
                     }
                     if (!data.settingsDefaultDisp) {
-                        $("#treeDefaultTh").remove();
-                        $("#treeDefaultTd").remove();
+                        $("#treeDefTh").remove();
+                        $("#treeDefTd").remove();
                     }
                 }
 
@@ -550,27 +635,15 @@ const storage = require("electron-json-storage");
                 });
             });
             $("#settingsBtn_" + id).on("click", () => {
-                //$("#settingsDialog").showModal();
-                let dlg: any = document.getElementById("settingsDialog");
-                dlg.show();
+                this.refs.setting.show();
             });
             $("#reload_" + id).on("click", () => {
-                $("#fancyTest").remove();
-                this.load(this.parentElem);
+                //$("#fancyTest").remove();
+                //this.load(this.parentElem);
+                this.props.onReload();
             });
-            $("#settingsOk").on("click", () => {
-                storage.set("settings", JSON.stringify({
-                    "settingsNameDisp": $("#settingsNameDisp").prop("checked"),
-                    "settingsPhpDisp": $("#settingsPhpDisp").prop("checked"),
-                    "settingsCsDisp": $("#settingsCsDisp").prop("checked"),
-                    "settingsTypeDisp": $("#settingsTypeDisp").prop("checked"),
-                    "settingsMinDisp": $("#settingsMinDisp").prop("checked"),
-                    "settingsMaxDisp": $("#settingsMaxDisp").prop("checked"),
-                    "settingsDefaultDisp": $("#settingsDefaultDisp").prop("checked"),
-                }), (error) => {
-                    this.reload();
-                });
-            });
+
+            this.resize();
         });
     }
 }

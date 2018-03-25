@@ -1,16 +1,17 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+}
+Object.defineProperty(exports, "__esModule", { value: true });
 // Import LESS or CSS:
-import 'jquery.fancytree/dist/skin-lion/ui.fancytree.less'
-import FancytreeNode = Fancytree.FancytreeNode;
-import Util from "orbi/renderer/util";
-
-const remote = require("electron").remote;
-
-const $ = require('jquery');
+require("jquery.fancytree/dist/skin-lion/ui.fancytree.less");
+var util_1 = __importDefault(require("orbi/renderer/util"));
+var remote = require("electron").remote;
+var $ = require('jquery');
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui');
-
-const fancytree = require('jquery.fancytree');
+var fancytree = require('jquery.fancytree');
 require('jquery.fancytree/dist/modules/jquery.fancytree.edit');
 require('jquery.fancytree/dist/modules/jquery.fancytree.filter');
 require('jquery.fancytree/dist/modules/jquery.fancytree.dnd');
@@ -18,49 +19,40 @@ require('jquery.fancytree/dist/modules/jquery.fancytree.dnd');
 require('./jquery.fancytree.multi.custom');
 require('jquery.fancytree/dist/modules/jquery.fancytree.gridnav');
 require('jquery.fancytree/dist/modules/jquery.fancytree.table');
-
 require("ui-contextmenu/jquery.ui-contextmenu");
 require("jquery-ui/themes/base/all.css");
-
 require("store");
 require("jquery-resizable-columns");
 require("jquery-resizable-columns/dist/jquery.resizableColumns.css");
-
 // todo GPL and MIT (https://github.com/alvaro-prieto/colResizable/issues/70)
 require("colresizable/colResizable-1.6.min.js");
-
-const storage = require("electron-json-storage");
-
-    export default class FancyTest {
-        private parentElem: any;
-
-    constructor(public readonly id: string) {
+var storage = require("electron-json-storage");
+var FancyTest = /** @class */ (function () {
+    function FancyTest(id) {
+        this.id = id;
     }
-
-    public load(elem: any) {
+    FancyTest.prototype.load = function (elem) {
         this.parentElem = elem;
-        let html = require("./fancy.html");
+        var html = require("./fancy.html");
         html = html.replace(/##fancyTableName##/g, this.id);
         elem.html(html);
         this.initTree();
-    }
-
-    public reload() {
+    };
+    FancyTest.prototype.reload = function () {
         $("#fancyTest").remove();
         this.load(this.parentElem);
-    }
-
-    public resize(container) {
+    };
+    FancyTest.prototype.resize = function (container) {
         $("#div_" + this.id).height(container.getElement().height() - 50);
         $("#" + this.id).height(container.getElement().height() - 50);
         $("#" + this.id).width(container.getElement().width());
-    }
-
-    private initTree() {
-        let id = this.id;
-        let reload = this.reload;
-        $(() => {
-            storage.get("settings", (error, data) => {
+    };
+    FancyTest.prototype.initTree = function () {
+        var _this = this;
+        var id = this.id;
+        var reload = this.reload;
+        $(function () {
+            storage.get("settings", function (error, data) {
                 if (data) {
                     data = JSON.parse(data);
                     if (!data.settingsNameDisp) {
@@ -92,25 +84,22 @@ const storage = require("electron-json-storage");
                         $("#treeDefaultTd").remove();
                     }
                 }
-
                 var clipboard;
                 var source = [
                     {
                         title: "node 1", folder: true, expanded: true, name: "a", children: [
-                            {title: "node 1.1", name: "a"},
-                            {title: "node 1.2", name: "b"}
+                            { title: "node 1.1", name: "a" },
+                            { title: "node 1.2", name: "b" }
                         ]
                     },
                     {
                         title: "node 2", folder: true, expanded: false, name: "a", children: [
-                            {title: "node 2.1", name: "c"},
-                            {title: "node 2.2", name: "d"}
+                            { title: "node 2.1", name: "c" },
+                            { title: "node 2.2", name: "d" }
                         ]
                     }
                 ];
-
                 var tree;
-
                 $("#" + id).fancytree({
                     //checkbox: true,
                     titlesTabbable: true,
@@ -124,25 +113,25 @@ const storage = require("electron-json-storage");
                         mode: "sameParent"
                     },
                     filter: {
-                        autoApply: true,   // Re-apply last filter if lazy data is loaded
-                        autoExpand: true, // Expand all branches that contain matches while filtered
-                        counter: true,     // Show a badge with number of matching child nodes near parent icons
-                        fuzzy: false,      // Match single characters in order, e.g. 'fb' will match 'FooBar'
-                        hideExpandedCounter: true,  // Hide counter badge if parent is expanded
-                        hideExpanders: false,       // Hide expanders if all child nodes are hidden by filter
-                        highlight: true,   // Highlight matches by wrapping inside <mark> tags
-                        leavesOnly: false, // Match end nodes only
-                        nodata: true,      // Display a 'no data' status node if result is empty
-                        mode: "hide"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
+                        autoApply: true,
+                        autoExpand: true,
+                        counter: true,
+                        fuzzy: false,
+                        hideExpandedCounter: true,
+                        hideExpanders: false,
+                        highlight: true,
+                        leavesOnly: false,
+                        nodata: true,
+                        mode: "hide" // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
                     },
                     dnd: {
-                        preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-                        preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+                        preventVoidMoves: true,
+                        preventRecursiveMoves: true,
                         autoExpandMS: 400,
                         // focusOnClick: true,
                         refreshPositions: true,
                         draggable: {
-                            appendTo: "body",  // We don't want to clip the helper inside container
+                            appendTo: "body",
                             // scroll: false,
                             // containment: "parent",  // $("ul.fancytree-container"),
                             // cursorAt: { left: 5 },
@@ -160,16 +149,13 @@ const storage = require("electron-json-storage");
                         },
                         initHelper: function (node, data) {
                             // Helper was just created: modify markup
-                            var helper = data.ui.helper,
-                                sourceNodes = data.tree.getSelectedNodes();
-
+                            var helper = data.ui.helper, sourceNodes = data.tree.getSelectedNodes();
                             // Store a list of active + all selected nodes
                             if (!node.isSelected()) {
                                 sourceNodes.unshift(node);
                             }
                             helper.data("sourceNodes", sourceNodes);
                             // Mark selected nodes also as drag source (active node is already)
-
                             //$(".fancytree-active,.fancytree-selected", tree.$container)
                             $(".fancytree-active,.fancytree-selected", $("#" + id).$container)
                                 .addClass("fancytree-drag-source");
@@ -184,16 +170,11 @@ const storage = require("electron-json-storage");
                         },
                         updateHelper: function (node, data) {
                             // Mouse was moved or key pressed: update helper according to modifiers
-
                             // NOTE: pressing modifier keys stops dragging in jQueryUI 1.11
                             // http://bugs.jqueryui.com/ticket/14461
-                            var event = data.originalEvent,
-                                tree = node.tree,
-                                copyMode = event.ctrlKey || event.altKey;
-
+                            var event = data.originalEvent, tree = node.tree, copyMode = event.ctrlKey || event.altKey;
                             // Adjust the drop marker icon
-//          data.dropMarker.toggleClass("fancytree-drop-copy", copyMode);
-
+                            //          data.dropMarker.toggleClass("fancytree-drop-copy", copyMode);
                             // Show/hide the helper's copy indicator (+)
                             data.ui.helper.find(".fancytree-dnd-modifier").toggle(copyMode);
                             // tree.debug("1", $(".fancytree-active,.fancytree-selected", tree.$container).length)
@@ -205,12 +186,9 @@ const storage = require("electron-json-storage");
                         },
                         dragDrop: function (node, data) {
                             if (!node.folder && data.hitMode === "over") {
-                                data.hitMode = "after"
+                                data.hitMode = "after";
                             }
-                            var sourceNodes = data.ui.helper.data("sourceNodes"),
-                                event = data.originalEvent,
-                                copyMode = event.ctrlKey || event.altKey;
-
+                            var sourceNodes = data.ui.helper.data("sourceNodes"), event = data.originalEvent, copyMode = event.ctrlKey || event.altKey;
                             if (copyMode) {
                                 $.each(sourceNodes, function (i, o) {
                                     o.copyTo(node, data.hitMode, function (n) {
@@ -219,7 +197,8 @@ const storage = require("electron-json-storage");
                                         n.title = "Copy of " + n.title;
                                     });
                                 });
-                            } else {
+                            }
+                            else {
                                 $.each(sourceNodes, function (i, o) {
                                     o.moveTo(node, data.hitMode);
                                 });
@@ -236,39 +215,31 @@ const storage = require("electron-json-storage");
                         close: function (event, data) {
                             if (data.save && data.isNew) {
                                 // Quick-enter: add new nodes until we hit [enter] on an empty title
-                                $("#" + id).trigger("nodeCommand", {cmd: "addSibling"});
+                                $("#" + id).trigger("nodeCommand", { cmd: "addSibling" });
                             }
                         }
                     },
                     table: {
                         indentation: 10,
-                        //nodeColumnIdx: 2,
-                        //checkboxColumnIdx: 0
                     },
                     gridnav: {
                         autofocusInput: true,
                         handleCursorKeys: true
                     },
-
                     lazyLoad: function (event, data) {
-                        data.result = {url: "../demo/ajax-sub2.json"};
+                        data.result = { url: "../demo/ajax-sub2.json" };
                     },
                     createNode: function (event, data) {
-                        var node = data.node,
-                            $tdList = $(node.tr).find(">td");
+                        var node = data.node, $tdList = $(node.tr).find(">td");
                     },
                     renderColumns: function (event, data) {
-                        var node = data.node,
-                            $tdList = $(node.tr).find(">td");
+                        var node = data.node, $tdList = $(node.tr).find(">td");
                         $tdList.eq(1).find("input").val(node.data.name);
                     }
                 }).on("nodeCommand", function (event, data) {
                     // Custom event handler that is triggered by keydown-handler and
                     // context menu:
-                    var refNode, moveMode,
-                        tree = $(this).fancytree("getTree"),
-                        node = tree.getActiveNode();
-
+                    var refNode, moveMode, tree = $(this).fancytree("getTree"), node = tree.getActiveNode();
                     switch (data.cmd) {
                         case "moveUp":
                             refNode = node.getPrevSibling();
@@ -309,18 +280,18 @@ const storage = require("electron-json-storage");
                             }
                             break;
                         case "addSibling":
-                            node.editCreateNode("after", {key: Util.makeUniqueId(), title: ""});
+                            node.editCreateNode("after", { key: util_1.default.makeUniqueId(), title: "" });
                             break;
                         case "addGroup":
                             node.editCreateNode("after", {
-                                key: Util.makeUniqueId(),
+                                key: util_1.default.makeUniqueId(),
                                 title: "",
                                 folder: true,
                                 expanded: false
                             });
                             break;
                         case "cut":
-                            clipboard = {mode: data.cmd, data: node};
+                            clipboard = { mode: data.cmd, data: node };
                             break;
                         case "copy":
                             clipboard = {
@@ -338,7 +309,8 @@ const storage = require("electron-json-storage");
                                 // refNode = node.getPrevSibling();
                                 clipboard.data.moveTo(node, "child");
                                 clipboard.data.setActive();
-                            } else if (clipboard.mode === "copy") {
+                            }
+                            else if (clipboard.mode === "copy") {
                                 node.addChildren(clipboard.data).setActive();
                             }
                             break;
@@ -346,38 +318,35 @@ const storage = require("electron-json-storage");
                             alert("Unhandled command: " + data.cmd);
                             return;
                     }
-
                 }).on("click dblclick", function (e) {
                     console.log(e, $.ui.fancytree.eventToString(e));
                     console.log("tanaka");
-
                 }).on("keydown", function (e) {
                     var cmd = null;
-
                     console.log(e.type, $.ui.fancytree.eventToString(e));
                     switch ($.ui.fancytree.eventToString(e)) {
                         case "ctrl+c":
-                        case "meta+c": // mac
+                        case "meta+c":// mac
                             cmd = "copy";
                             break;
                         case "ctrl+v":
-                        case "meta+v": // mac
+                        case "meta+v":// mac
                             cmd = "paste";
                             break;
                         case "ctrl+x":
-                        case "meta+x": // mac
+                        case "meta+x":// mac
                             cmd = "cut";
                             break;
                         case "ctrl+n":
-                        case "meta+n": // mac
+                        case "meta+n":// mac
                             cmd = "addSibling";
                             break;
                         case "ctrl+g":
-                        case "meta+g": // mac
+                        case "meta+g":// mac
                             cmd = "addGroup";
                             break;
                         case "del":
-                        case "meta+backspace": // mac
+                        case "meta+backspace":// mac
                             cmd = "remove";
                             break;
                         // case "f2":  // already triggered by ext-edit pluging
@@ -390,25 +359,23 @@ const storage = require("electron-json-storage");
                             cmd = "moveDown";
                             break;
                         case "ctrl+right":
-                        case "ctrl+shift+right": // mac
+                        case "ctrl+shift+right":// mac
                             cmd = "indent";
                             break;
                         case "ctrl+left":
-                        case "ctrl+shift+left": // mac
+                        case "ctrl+shift+left":// mac
                             cmd = "outdent";
                     }
                     if (cmd) {
-                        $(this).trigger("nodeCommand", {cmd: cmd});
+                        $(this).trigger("nodeCommand", { cmd: cmd });
                         // e.preventDefault();
                         // e.stopPropagation();
                         return false;
                     }
                 });
-
                 // $("#" + id).resizableColumns({
                 //     store: window.store
                 // });
-
                 /*
                  * Tooltips
                  */
@@ -421,7 +388,7 @@ const storage = require("electron-json-storage");
                     resizeMode: 'flex',
                     partialRefresh: true,
                     liveDrag: true,
-                    onDrag: () => {
+                    onDrag: function () {
                         $("#treeNodeTd").width($("#treeNodeTh").width());
                         $("#treeNameTd").width($("#treeNameTh").width());
                         $("#treeCsTd").width($("#treeCsTh").width());
@@ -431,32 +398,21 @@ const storage = require("electron-json-storage");
                         $("#treeMaxTd").width($("#treeMaxTh").width());
                         $("#treeDefTd").width($("#treeDefTh").width());
                     },
-                    // onResize:()=>{
-                    //     $("#treeNodeTh").width($("#treeNodeTd").width());
-                    //     $("#treeNameTh").width($("#treeNameTd").width());
-                    //     $("#treeCsTh").width($("#treeCsTd").width());
-                    //     $("#treePhpTh").width($("#treePhpTd").width());
-                    //     $("#treeTypeTh").width($("#treeTypeTd").width());
-                    //     $("#treeMinTh").width($("#treeMinTd").width());
-                    //     $("#treeMaxTh").width($("#treeMaxTd").width());
-                    //     $("#treeDefTh").width($("#treeDefTd").width());
-                    // }
                 });
-
                 /*
                  * Context menu (https://github.com/mar10/jquery-ui-contextmenu)
                  */
                 $("#" + id).contextmenu({
                     delegate: "span.fancytree-node",
                     menu: [
-                        {title: "編集 <kbd>[F2]</kbd>", cmd: "rename", uiIcon: "ui-icon-pencil"},
-                        {title: "削除 <kbd>[Del]</kbd>", cmd: "remove", uiIcon: "ui-icon-trash"},
-                        {title: "----"},
-                        {title: "ノードグループ作成 <kbd>[Ctrl+G]</kbd>", cmd: "addGroup", uiIcon: "ui-icon-plus"},
-                        {title: "ノード作成 <kbd>[Ctrl+N]</kbd>", cmd: "addSibling", uiIcon: "ui-icon-plus"},
-                        {title: "----"},
-                        {title: "切り取り <kbd>Ctrl+X</kbd>", cmd: "cut", uiIcon: "ui-icon-scissors"},
-                        {title: "コピー <kbd>Ctrl-C</kbd>", cmd: "copy", uiIcon: "ui-icon-copy"},
+                        { title: "編集 <kbd>[F2]</kbd>", cmd: "rename", uiIcon: "ui-icon-pencil" },
+                        { title: "削除 <kbd>[Del]</kbd>", cmd: "remove", uiIcon: "ui-icon-trash" },
+                        { title: "----" },
+                        { title: "ノードグループ作成 <kbd>[Ctrl+G]</kbd>", cmd: "addGroup", uiIcon: "ui-icon-plus" },
+                        { title: "ノード作成 <kbd>[Ctrl+N]</kbd>", cmd: "addSibling", uiIcon: "ui-icon-plus" },
+                        { title: "----" },
+                        { title: "切り取り <kbd>Ctrl+X</kbd>", cmd: "cut", uiIcon: "ui-icon-scissors" },
+                        { title: "コピー <kbd>Ctrl-C</kbd>", cmd: "copy", uiIcon: "ui-icon-copy" },
                         {
                             title: "貼り付け<kbd>Ctrl+V</kbd>",
                             cmd: "paste",
@@ -474,27 +430,21 @@ const storage = require("electron-json-storage");
                         // delay the event, so the menu can close and the click event does
                         // not interfere with the edit control
                         setTimeout(function () {
-                            $(that).trigger("nodeCommand", {cmd: ui.cmd});
+                            $(that).trigger("nodeCommand", { cmd: ui.cmd });
                         }, 100);
                     }
                 });
-
                 $("input[name=search_" + id + "]").keyup(function (e) {
-                    var n,
-                        //tree = $.ui.fancytree.getTree(),
-                        tree = $("#" + id).fancytree("getTree"),
-                        args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "),
-                        opts: any = {},
-                        //filterFunc = $("#branchMode").is(":checked") ? tree.filterBranches : tree.filterNodes,
-                        filterFunc = tree.filterBranches,
-                        match = $(this).val();
-
+                    var n, 
+                    //tree = $.ui.fancytree.getTree(),
+                    tree = $("#" + id).fancytree("getTree"), args = "autoApply autoExpand fuzzy hideExpanders highlight leavesOnly nodata".split(" "), opts = {}, 
+                    //filterFunc = $("#branchMode").is(":checked") ? tree.filterBranches : tree.filterNodes,
+                    filterFunc = tree.filterBranches, match = $(this).val();
                     $.each(args, function (i, o) {
                         opts[o] = $("#" + o).is(":checked");
                     });
                     //opts.mode = $("#hideMode").is(":checked") ? "hide" : "dimm";
                     opts.mode = "hide";
-
                     if (e && e.which === $.ui.keyCode.ESCAPE || $.trim(match) === "") {
                         tree.clearFilter();
                         return;
@@ -510,29 +460,27 @@ const storage = require("electron-json-storage");
                     // }
                     n = filterFunc.call(tree, match, opts);
                 }).focus();
-
-                let expandedAll = false;
-                $("#toggleExpand_" + id).on("click", () => {
+                var expandedAll = false;
+                $("#toggleExpand_" + id).on("click", function () {
                     expandedAll = !expandedAll;
-                    $("#" + id).fancytree("getTree").visit(node => {
+                    $("#" + id).fancytree("getTree").visit(function (node) {
                         node.setExpanded(expandedAll);
                     });
                 });
-
-                $("#saveBtn_" + id).on("click", () => {
-                    let tree: Fancytree.Fancytree = $("#" + id).fancytree("getTree");
-                    let d = tree.toDict(true, (node: FancytreeNode) => {
-                        const n = tree.getNodeByKey(node.key);
+                $("#saveBtn_" + id).on("click", function () {
+                    var tree = $("#" + id).fancytree("getTree");
+                    var d = tree.toDict(true, function (node) {
+                        var n = tree.getNodeByKey(node.key);
                         if (n.tr) {
-                            const $tdList = $(n.tr).find(">td");
+                            var $tdList = $(n.tr).find(">td");
                             if (!node.data) {
                                 node.data = {};
                             }
                             node.data.name = $tdList.eq(1).find("input").val();
                         }
                     });
-                    const json = JSON.stringify(d);
-                    storage.set("tree", json, error => {
+                    var json = JSON.stringify(d);
+                    storage.set("tree", json, function (error) {
                         if (error) {
                             alert("保存に失敗しました。");
                             throw error;
@@ -541,7 +489,7 @@ const storage = require("electron-json-storage");
                 });
             });
             $("#loadBtn_" + id).on("click", function () {
-                storage.get("tree", (error, data) => {
+                storage.get("tree", function (error, data) {
                     if (error) {
                         alert("読み込みに失敗しました。");
                         throw error;
@@ -549,16 +497,16 @@ const storage = require("electron-json-storage");
                     $("#" + id).fancytree("option", "source", JSON.parse(data));
                 });
             });
-            $("#settingsBtn_" + id).on("click", () => {
+            $("#settingsBtn_" + id).on("click", function () {
                 //$("#settingsDialog").showModal();
-                let dlg: any = document.getElementById("settingsDialog");
+                var dlg = document.getElementById("settingsDialog");
                 dlg.show();
             });
-            $("#reload_" + id).on("click", () => {
+            $("#reload_" + id).on("click", function () {
                 $("#fancyTest").remove();
-                this.load(this.parentElem);
+                _this.load(_this.parentElem);
             });
-            $("#settingsOk").on("click", () => {
+            $("#settingsOk").on("click", function () {
                 storage.set("settings", JSON.stringify({
                     "settingsNameDisp": $("#settingsNameDisp").prop("checked"),
                     "settingsPhpDisp": $("#settingsPhpDisp").prop("checked"),
@@ -567,10 +515,13 @@ const storage = require("electron-json-storage");
                     "settingsMinDisp": $("#settingsMinDisp").prop("checked"),
                     "settingsMaxDisp": $("#settingsMaxDisp").prop("checked"),
                     "settingsDefaultDisp": $("#settingsDefaultDisp").prop("checked"),
-                }), (error) => {
-                    this.reload();
+                }), function (error) {
+                    _this.reload();
                 });
             });
         });
-    }
-}
+    };
+    return FancyTest;
+}());
+exports.default = FancyTest;
+//# sourceMappingURL=fancy.js.map

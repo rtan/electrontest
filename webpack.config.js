@@ -33,7 +33,7 @@ module.exports = [
             {
                 rules: [
                     {
-                        test: /\.ts$/,
+                        test: /\.(ts|tsx)$/,
                         use: "ts-loader",
                     },
                     {
@@ -55,7 +55,7 @@ module.exports = [
                 ]
             },
         resolve: {
-            extensions: [".ts", ".js", ".css", ".html", ".less", ".gif"],
+            extensions: [".ts", ".tsx", ".js", ".css", ".html", ".less", ".gif"],
             alias: {
                 orbi: path.resolve(__dirname, './src/orbi')
             }
