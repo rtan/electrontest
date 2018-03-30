@@ -24,11 +24,11 @@ var Setting = /** @class */ (function (_super) {
         return _super.call(this, props) || this;
     }
     Setting.prototype.show = function () {
-        var dlg = document.getElementById("settingsDialog");
+        var dlg = document.getElementById("settingsDialog_" + this.props.id);
         dlg.show();
     };
     Setting.prototype.render = function () {
-        return (React.createElement("dialog", { id: "settingsDialog" },
+        return (React.createElement("dialog", { id: "settingsDialog_" + this.props.id },
             React.createElement("form", { method: "dialog" },
                 React.createElement("div", { style: { padding: "10px", fontWeight: "bold" } }, "\u8A2D\u5B9A"),
                 React.createElement("table", { style: { textAlign: "center" } },
@@ -40,31 +40,31 @@ var Setting = /** @class */ (function (_super) {
                         React.createElement("tr", null,
                             React.createElement("td", null, "\u540D\u79F0"),
                             React.createElement("td", null,
-                                React.createElement("input", { id: "settingsNameDisp", type: "checkbox" }))),
+                                React.createElement("input", { id: "settingsNameDisp_" + this.props.id, type: "checkbox" }))),
                         React.createElement("tr", null,
                             React.createElement("td", null, "C#"),
                             React.createElement("td", null,
-                                React.createElement("input", { id: "settingsCsDisp", type: "checkbox" }))),
+                                React.createElement("input", { id: "settingsCsDisp_" + this.props.id, type: "checkbox" }))),
                         React.createElement("tr", null,
                             React.createElement("td", null, "PHP"),
                             React.createElement("td", null,
-                                React.createElement("input", { id: "settingsPhpDisp", type: "checkbox" }))),
+                                React.createElement("input", { id: "settingsPhpDisp_" + this.props.id, type: "checkbox" }))),
                         React.createElement("tr", null,
                             React.createElement("td", null, "\u578B"),
                             React.createElement("td", null,
-                                React.createElement("input", { id: "settingsTypeDisp", type: "checkbox" }))),
+                                React.createElement("input", { id: "settingsTypeDisp_" + this.props.id, type: "checkbox" }))),
                         React.createElement("tr", null,
                             React.createElement("td", null, "\u6700\u5C0F\u5024"),
                             React.createElement("td", null,
-                                React.createElement("input", { id: "settingsMinDisp", type: "checkbox" }))),
+                                React.createElement("input", { id: "settingsMinDisp_" + this.props.id, type: "checkbox" }))),
                         React.createElement("tr", null,
                             React.createElement("td", null, "\u6700\u5927\u5024"),
                             React.createElement("td", null,
-                                React.createElement("input", { id: "settingsMaxDisp", type: "checkbox" }))),
+                                React.createElement("input", { id: "settingsMaxDisp_" + this.props.id, type: "checkbox" }))),
                         React.createElement("tr", null,
                             React.createElement("td", null, "\uFF83\uFF9E\uFF8C\uFF6B\uFF99\uFF84\u5024"),
                             React.createElement("td", null,
-                                React.createElement("input", { id: "settingsDefaultDisp", type: "checkbox" }))))),
+                                React.createElement("input", { id: "settingsDefaultDisp_" + this.props.id, type: "checkbox" }))))),
                 React.createElement("div", { style: { paddingTop: "10px", textAlign: "center" } },
                     React.createElement("button", { id: "settingsOk", type: "submit", value: "ok", style: { width: "100px" }, onClick: this.props.onOk }, "Ok"),
                     React.createElement("button", { type: "submit", value: "cancel", style: { width: "100px" } }, "Cancel")))));
