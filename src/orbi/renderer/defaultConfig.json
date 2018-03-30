@@ -1,0 +1,27 @@
+{
+    "dataConfigs": [
+        {
+            "dataName": "ワーク",
+            "reader": "work/workReader",
+            "writer": "work/workWriter",
+            "columns": [
+                {"id":"node", "name":"ノード", "minWidth":250, "maxWidth":250},
+                {"id":"name", "name":"名称", "minWidth":180, "maxWidth":400},
+                {"id":"cs", "name":"C#", "minWidth":30, "maxWidth":30},
+                {"id":"php", "name":"PHP", "minWidth":30, "maxWidth":30},
+                {"id":"type", "name":"型", "minWidth":60, "maxWidth":60}
+            ]
+        },
+        {
+            "dataName": "マスタ",
+            "reader": "ms/msReader",
+            "writer": "ms/msWriter",
+            "columns": [
+                {"id":"node", "name":"ノード", "minWidth":250, "maxWidth":250},
+                {"id":"name", "name":"名称", "minWidth":180, "maxWidth":400},
+                {"id":"cs", "name":"C#", "minWidth":30, "maxWidth":30},
+                {"id":"php", "name":"PHP", "minWidth":30, "maxWidth":30}
+            ]
+        }
+    ]
+}

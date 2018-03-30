@@ -7,7 +7,8 @@
     "tscinit": "tsc --init",
     "build": "webpack",
     "watch": "webpack --watch",
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . orbi --platform=win32 --arch=x64 --version=1.6.11 --overwrite"
   },
   "author": "",
   "license": "ISC",
@@ -34,10 +35,14 @@
     "@types/react-dom": "^16.0.4",
     "colresizable": "^1.6.0",
     "electron-json-storage": "^4.0.2",
+    "electron-packager": "^11.2.0",
     "golden-layout": "^1.5.9",
+    "inversify": "^4.11.1",
+    "inversify-inject-decorators": "^3.1.0",
     "jquery-resizable-columns": "^0.2.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "reflect-metadata": "^0.1.12",
     "store": "^2.0.12",
     "ui-contextmenu": "^1.18.1"
   }

@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __importStar(require("react"));
 require("jquery.fancytree/dist/skin-lion/ui.fancytree.less");
-var util_1 = __importDefault(require("orbi/renderer/util"));
+var util_1 = __importDefault(require("orbi/renderer/common/IdGenerator"));
 var setting_1 = require("orbi/renderer/component/fancy/setting");
 var remote = require("electron").remote;
 var storage = require("electron-json-storage");

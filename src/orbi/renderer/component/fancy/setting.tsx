@@ -2,6 +2,8 @@ import * as React from "react";
 
 export interface SettingProps {
     onOk: () => void;
+
+    id: string;
 }
 
 export interface SettingState {
@@ -14,13 +16,13 @@ export class Setting extends React.Component<SettingProps, SettingState> {
     }
 
     public show() {
-        let dlg: any = document.getElementById("settingsDialog");
+        let dlg: any = document.getElementById("settingsDialog_"+this.props.id);
         dlg.show();
     }
 
     render() {
         return (
-            <dialog id="settingsDialog">
+            <dialog id={`settingsDialog_${this.props.id}`}>
                 <form method="dialog">
                     <div style={{padding: "10px", fontWeight: "bold"}}>設定</div>
                     <table style={{textAlign: "center"}}>
@@ -33,31 +35,31 @@ export class Setting extends React.Component<SettingProps, SettingState> {
                         <tbody>
                         <tr>
                             <td>名称</td>
-                            <td><input id="settingsNameDisp" type="checkbox"/></td>
+                            <td><input id={`settingsNameDisp_${this.props.id}`} type="checkbox"/></td>
                         </tr>
                         <tr>
                             <td>C#</td>
-                            <td><input id="settingsCsDisp" type="checkbox"/></td>
+                            <td><input id={`settingsCsDisp_${this.props.id}`} type="checkbox"/></td>
                         </tr>
                         <tr>
                             <td>PHP</td>
-                            <td><input id="settingsPhpDisp" type="checkbox"/></td>
+                            <td><input id={`settingsPhpDisp_${this.props.id}`} type="checkbox"/></td>
                         </tr>
                         <tr>
                             <td>型</td>
-                            <td><input id="settingsTypeDisp" type="checkbox"/></td>
+                            <td><input id={`settingsTypeDisp_${this.props.id}`} type="checkbox"/></td>
                         </tr>
                         <tr>
                             <td>最小値</td>
-                            <td><input id="settingsMinDisp" type="checkbox"/></td>
+                            <td><input id={`settingsMinDisp_${this.props.id}`} type="checkbox"/></td>
                         </tr>
                         <tr>
                             <td>最大値</td>
-                            <td><input id="settingsMaxDisp" type="checkbox"/></td>
+                            <td><input id={`settingsMaxDisp_${this.props.id}`} type="checkbox"/></td>
                         </tr>
                         <tr>
                             <td>ﾃﾞﾌｫﾙﾄ値</td>
-                            <td><input id="settingsDefaultDisp" type="checkbox"/></td>
+                            <td><input id={`settingsDefaultDisp_${this.props.id}`} type="checkbox"/></td>
                         </tr>
                         </tbody>
                     </table>

@@ -1,11 +1,8 @@
 import * as React from "react";
-
-import 'jquery.fancytree/dist/skin-lion/ui.fancytree.less'
-import FancytreeNode = Fancytree.FancytreeNode;
-import Util from "orbi/renderer/util";
+import IdGenerator from "orbi/renderer/common/IdGenerator";
 import {Setting} from "orbi/renderer/component/fancy/setting";
-
-const remote = require("electron").remote;
+import 'jquery.fancytree/dist/skin-lion/ui.fancytree.less'
+import { lazyInject } from 'orbi/inversify.config'
 
 const storage = require("electron-json-storage");
 
@@ -44,12 +41,15 @@ export interface TreeGridProps {
 }
 
 export interface TreeGridState {
-
 }
 
 export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
+
+    // todo use di
+    @lazyInject(IdGenerator) private idGenerator: IdGenerator;
+
     private parentElem: any;
-    private id: number;
+    private id: string;
 
     refs: {
         setting: any
@@ -57,14 +57,14 @@ export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
 
     constructor(props: TreeGridProps) {
         super(props);
-        this.id = +props.id;
+        this.id = props.id;
         this.load(this.props.glContainer.parent);
     }
 
     render() {
         return (
             <div id="fancyTest">
-                <Setting ref="setting" onOk={() => {
+                <Setting ref={`setting_${this.props.id}`} id={this.id} onOk={() => {
                     this.settingsOk();
                 }}/>
                 <div className="fancytest">
@@ -80,29 +80,29 @@ export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
                         <table id={`${this.props.id}`} className="tanaka">
                             <thead className="fancytest">
                             <tr>
-                                <th id="treeNodeTh" style={{minWidth: "250px", maxWidth: "250px"}}>ノード</th>
-                                <th id="treeNameTh" style={{minWidth: "180px"}}>名称</th>
-                                <th id="treeCsTh" style={{minWidth: "30px", maxWidth: "30px"}}>C#</th>
-                                <th id="treePhpTh" style={{minWidth: "30px", maxWidth: "30px"}}>PHP</th>
-                                <th id="treeTypeTh" style={{minWidth: "50px"}}>型</th>
-                                <th id="treeMinTh" style={{minWidth: "70px"}}>最小値</th>
-                                <th id="treeMaxTh" style={{minWidth: "70px"}}>最大値</th>
-                                <th id="treeDefTh" style={{minWidth: "70px"}}>ﾃﾞﾌｫﾙﾄ値</th>
+                                <th id={`treeNodeTh_${this.props.id}`} style={{minWidth: "250px", maxWidth: "250px"}}>ノード</th>
+                                <th id={`treeNameTh_${this.props.id}`} style={{minWidth: "180px"}}>名称</th>
+                                <th id={`treeCsTh_${this.props.id}`} style={{minWidth: "30px", maxWidth: "30px"}}>C#</th>
+                                <th id={`treePhpTh_${this.props.id}`} style={{minWidth: "30px", maxWidth: "30px"}}>PHP</th>
+                                <th id={`treeTypeTh_${this.props.id}`} style={{minWidth: "50px"}}>型</th>
+                                <th id={`treeMinTh_${this.props.id}`} style={{minWidth: "70px"}}>最小値</th>
+                                <th id={`treeMaxTh_${this.props.id}`} style={{minWidth: "70px"}}>最大値</th>
+                                <th id={`treeDefTh_${this.props.id}`} style={{minWidth: "70px"}}>ﾃﾞﾌｫﾙﾄ値</th>
                             </tr>
                             </thead>
                             <tbody className="fancytest">
                             <tr>
-                                <td id="treeNodeTd" style={{minWidth: "250px", maxWidth: "250px"}}
+                                <td id={`treeNodeTd_${this.props.id}`} style={{minWidth: "250px", maxWidth: "250px"}}
                                     className="alignCenter"/>
-                                <td id="treeNameTd" style={{minWidth: "180px"}}>
+                                <td id={`treeNameTd_${this.props.id}`} style={{minWidth: "180px"}}>
                                     <input type="text" name="name" title="name" style={{width: "98%"}}/>
                                 </td>
-                                <td id="treeCsTd" style={{minWidth: "30px", maxWidth: "30px"}}/>
-                                <td id="treePhpTd" style={{minWidth: "30px", maxWidth: "30px"}}/>
-                                <td id="treeTypeTd" style={{minWidth: "50px"}}/>
-                                <td id="treeMinTd" style={{minWidth: "70px"}}/>
-                                <td id="treeMaxTd" style={{minWidth: "70px"}}/>
-                                <td id="treeDefTd" style={{minWidth: "70px"}}/>
+                                <td id={`treeCsTd_${this.props.id}`} style={{minWidth: "30px", maxWidth: "30px"}}/>
+                                <td id={`treePhpTd_${this.props.id}`} style={{minWidth: "30px", maxWidth: "30px"}}/>
+                                <td id={`treeTypeTd_${this.props.id}`} style={{minWidth: "50px"}}/>
+                                <td id={`treeMinTd_${this.props.id}`} style={{minWidth: "70px"}}/>
+                                <td id={`treeMaxTd_${this.props.id}`} style={{minWidth: "70px"}}/>
+                                <td id={`treeDefTd_${this.props.id}`} style={{minWidth: "70px"}}/>
                             </tr>
                             </tbody>
                         </table>
@@ -128,53 +128,55 @@ export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
     }
 
     public settingsOk() {
-        storage.set("settings", JSON.stringify({
-            "settingsNameDisp": $("#settingsNameDisp").prop("checked"),
-            "settingsPhpDisp": $("#settingsPhpDisp").prop("checked"),
-            "settingsCsDisp": $("#settingsCsDisp").prop("checked"),
-            "settingsTypeDisp": $("#settingsTypeDisp").prop("checked"),
-            "settingsMinDisp": $("#settingsMinDisp").prop("checked"),
-            "settingsMaxDisp": $("#settingsMaxDisp").prop("checked"),
-            "settingsDefaultDisp": $("#settingsDefaultDisp").prop("checked"),
-        }), (error) => {
-            this.props.onReload();
-        });
+        let container = this.props.glContainer;
+        container.extendState({settings: {
+                settingsNameDisp: $("#settingsNameDisp_"+this.id).prop("checked"),
+                settingsPhpDisp: $("#settingsPhpDisp_"+this.id).prop("checked"),
+                settingsCsDisp: $("#settingsCsDisp_"+this.id).prop("checked"),
+                settingsTypeDisp: $("#settingsTypeDisp_"+this.id).prop("checked"),
+                settingsMinDisp: $("#settingsMinDisp_"+this.id).prop("checked"),
+                settingsMaxDisp: $("#settingsMaxDisp_"+this.id).prop("checked"),
+                settingsDefaultDisp: $("#settingsDefaultDisp_"+this.id).prop("checked"),
+        }});
     }
 
 
     private initTree() {
-        let id = this.id;
+        const glContainer = this.props.glContainer;
+        const id = this.id;
+        const idGenerator = this.idGenerator;
+
         $(() => {
             storage.get("settings", (error, data) => {
-                if (data) {
-                    data = JSON.parse(data);
-                    if (!data.settingsNameDisp) {
-                        $("#treeNameTh").remove();
-                        $("#treeNameTd").remove();
+                let state = glContainer.getState();
+                if(state && "settings" in state){
+                    if("settingsNameDisp" in state.settings && !state.settings.settingsNameDisp){
+                        $("#treeNameTh_"+this.id).remove();
+                        $("#treeNameTd_"+this.id).remove();
                     }
-                    if (!data.settingsCsDisp) {
-                        $("#treeCsTh").remove();
-                        $("#treeCsTd").remove();
+                    if("settingsCsDisp" in state.settings && !state.settings.settingsCsDisp){
+                        $("#treeCsTh_"+this.id).remove();
+                        $("#treeCsTd_"+this.id).remove();
                     }
-                    if (!data.settingsPhpDisp) {
-                        $("#treePhpTh").remove();
-                        $("#treePhpTd").remove();
+                    if("settingsPhpDisp" in state.settings && !state.settings.settingsPhpDisp){
+                        $("#treePhpTh_"+this.id).remove();
+                        $("#treePhpTd_"+this.id).remove();
                     }
-                    if (!data.settingsTypeDisp) {
-                        $("#treeTypeTh").remove();
-                        $("#treeTypeTd").remove();
+                    if("settingsTypeDisp" in state.settings && !state.settings.settingsTypeDisp){
+                        $("#treeTypeTh_"+this.id).remove();
+                        $("#treeTypeTd_"+this.id).remove();
                     }
-                    if (!data.settingsMinDisp) {
-                        $("#treeMinTh").remove();
-                        $("#treeMinTd").remove();
+                    if("settingsMinDisp" in state.settings && !state.settings.settingsMinDisp){
+                        $("#treeMinTh_"+this.id).remove();
+                        $("#treeMinTd_"+this.id).remove();
                     }
-                    if (!data.settingsMaxDisp) {
-                        $("#treeMaxTh").remove();
-                        $("#treeMaxTd").remove();
+                    if("settingsMaxDisp" in state.settings && !state.settings.settingsMaxDisp){
+                        $("#treeMaxTh_"+this.id).remove();
+                        $("#treeMaxTd_"+this.id).remove();
                     }
-                    if (!data.settingsDefaultDisp) {
-                        $("#treeDefTh").remove();
-                        $("#treeDefTd").remove();
+                    if("settingsDefaultDisp" in state.settings && !state.settings.settingsDefDisp){
+                        $("#treeDefTh_"+this.id).remove();
+                        $("#treeDefTd_"+this.id).remove();
                     }
                 }
 
@@ -394,11 +396,11 @@ export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
                             }
                             break;
                         case "addSibling":
-                            node.editCreateNode("after", {key: Util.makeUniqueId(), title: ""});
+                            node.editCreateNode("after", {key: idGenerator.makeUniqueId(), title: ""});
                             break;
                         case "addGroup":
                             node.editCreateNode("after", {
-                                key: Util.makeUniqueId(),
+                                key: idGenerator.makeUniqueId(),
                                 title: "",
                                 folder: true,
                                 expanded: false
@@ -507,14 +509,14 @@ export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
                     partialRefresh: true,
                     liveDrag: true,
                     onDrag: () => {
-                        $("#treeNodeTd").width($("#treeNodeTh").width());
-                        $("#treeNameTd").width($("#treeNameTh").width());
-                        $("#treeCsTd").width($("#treeCsTh").width());
-                        $("#treePhpTd").width($("#treePhpTh").width());
-                        $("#treeTypeTd").width($("#treeTypeTh").width());
-                        $("#treeMinTd").width($("#treeMinTh").width());
-                        $("#treeMaxTd").width($("#treeMaxTh").width());
-                        $("#treeDefTd").width($("#treeDefTh").width());
+                        $("#treeNodeTd_"+this.id).width($("#treeNodeTh_"+this.id).width());
+                        $("#treeNameTd_"+this.id).width($("#treeNameTh_"+this.id).width());
+                        $("#treeCsTd_"+this.id).width($("#treeCsTh_"+this.id).width());
+                        $("#treePhpTd_"+this.id).width($("#treePhpTh_"+this.id).width());
+                        $("#treeTypeTd_"+this.id).width($("#treeTypeTh_"+this.id).width());
+                        $("#treeMinTd_"+this.id).width($("#treeMinTh_"+this.id).width());
+                        $("#treeMaxTd_"+this.id).width($("#treeMaxTh_"+this.id).width());
+                        $("#treeDefTd_"+this.id).width($("#treeDefTh_"+this.id).width());
                     },
                     // onResize:()=>{
                     //     $("#treeNodeTh").width($("#treeNodeTd").width());
@@ -606,7 +608,7 @@ export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
 
                 $("#saveBtn_" + id).on("click", () => {
                     let tree: Fancytree.Fancytree = $("#" + id).fancytree("getTree");
-                    let d = tree.toDict(true, (node: FancytreeNode) => {
+                    let d = tree.toDict(true, (node: Fancytree.FancytreeNode) => {
                         const n = tree.getNodeByKey(node.key);
                         if (n.tr) {
                             const $tdList = $(n.tr).find(">td");
@@ -635,7 +637,7 @@ export class TreeGrid extends React.Component<TreeGridProps, TreeGridState> {
                 });
             });
             $("#settingsBtn_" + id).on("click", () => {
-                this.refs.setting.show();
+                this.refs["setting_"+id].show();
             });
             $("#reload_" + id).on("click", () => {
                 //$("#fancyTest").remove();
