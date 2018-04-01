@@ -6,6 +6,7 @@ export interface FancyProps {
     glContainer: any;
 
     id: any;
+    saveLayout: () => void;
 }
 
 export interface FancyState {
@@ -40,7 +41,8 @@ export class Fancy extends React.Component<FancyProps, FancyState> {
             );
         }
         return (
-            <TreeGrid id={this.props.id} glContainer={this.props.glContainer} onReload={() => this.reload()}/>
+            <TreeGrid id={this.props.id} glContainer={this.props.glContainer} onReload={() => this.reload()}
+                      saveLayout={this.props.saveLayout}/>
         );
     }
 

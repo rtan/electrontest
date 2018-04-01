@@ -45,7 +45,7 @@ var Fancy = /** @class */ (function (_super) {
         if (this.state.isReload) {
             return (React.createElement("div", null, "loading..."));
         }
-        return (React.createElement(treegrid_1.TreeGrid, { id: this.props.id, glContainer: this.props.glContainer, onReload: function () { return _this.reload(); } }));
+        return (React.createElement(treegrid_1.TreeGrid, { id: this.props.id, glContainer: this.props.glContainer, onReload: function () { return _this.reload(); }, saveLayout: this.props.saveLayout }));
     };
     return Fancy;
 }(React.Component));

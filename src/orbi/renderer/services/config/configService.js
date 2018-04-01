@@ -14,13 +14,14 @@ var inversify_1 = require("inversify");
 var fs_1 = __importDefault(require("fs"));
 var ConfigService = /** @class */ (function () {
     function ConfigService() {
-        if (!fs_1.default.existsSync("./settings.json")) {
+        if (!fs_1.default.existsSync(ConfigService_1.CONFIG_NAME)) {
             var defaultConfig = require("orbi/renderer/services/config/defaultConfig.json");
-            fs_1.default.writeFileSync("./settings.json", JSON.stringify(defaultConfig, null, "  "), { encoding: "utf-8" });
+            fs_1.default.writeFileSync(ConfigService_1.CONFIG_NAME, JSON.stringify(defaultConfig, null, "  "), { encoding: "utf-8" });
         }
-        var json = fs_1.default.readFileSync("./settings.json", { encoding: "utf-8" });
+        var json = fs_1.default.readFileSync(ConfigService_1.CONFIG_NAME, { encoding: "utf-8" });
         this._config = JSON.parse(json);
     }
+    ConfigService_1 = ConfigService;
     Object.defineProperty(ConfigService.prototype, "config", {
         get: function () {
             return this._config;
@@ -28,10 +29,12 @@ var ConfigService = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    ConfigService = __decorate([
+    ConfigService.CONFIG_NAME = "./config.json";
+    ConfigService = ConfigService_1 = __decorate([
         inversify_1.injectable()
     ], ConfigService);
     return ConfigService;
+    var ConfigService_1;
 }());
 exports.default = ConfigService;
 //# sourceMappingURL=configService.js.map

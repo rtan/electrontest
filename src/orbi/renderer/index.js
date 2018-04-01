@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = __importDefault(require("electron"));
 var golden_layout_1 = __importDefault(require("golden-layout"));
 var fancy_1 = require("orbi/renderer/component/fancy/fancy");
-var IdGenerator_1 = __importDefault(require("orbi/renderer/common/IdGenerator"));
+var idGenerator_1 = __importDefault(require("orbi/renderer/services/idGenerator/idGenerator"));
 var react_1 = __importDefault(require("react"));
 var react_dom_1 = __importDefault(require("react-dom"));
 var electron_json_storage_1 = __importDefault(require("electron-json-storage"));
@@ -20,10 +20,19 @@ window.ReactDOM = react_dom_1.default;
 window.jQuery = jquery_1.default;
 window.$ = jquery_1.default;
 // todo use di
-var idGenerator = inversify_config_1.container.get(IdGenerator_1.default);
+var idGenerator = inversify_config_1.container.get(idGenerator_1.default);
 // -------------------------------
 // golden-layout
 electron_json_storage_1.default.get("glCurrentLayout", function (e, d) {
+    var myLayout = null;
+    // todo propsもセーブされるが関数が保存されず次回エラー
+    var onSaveLayout = function () {
+        electron_json_storage_1.default.set("glCurrentLayout", JSON.stringify(myLayout.toConfig()), function (e) {
+            if (e) {
+                throw e;
+            }
+        });
+    };
     var config = {};
     if (Object.keys(d).length > 0) {
         config = JSON.parse(d);
@@ -33,19 +42,15 @@ electron_json_storage_1.default.get("glCurrentLayout", function (e, d) {
             content: [{
                     type: 'react-component',
                     component: 'reacttest',
-                    props: { id: idGenerator.makeUniqueId() },
+                    props: { id: idGenerator.makeUniqueId(), saveLayout: onSaveLayout },
                 }]
         };
     }
-    var myLayout = new golden_layout_1.default(config);
+    myLayout = new golden_layout_1.default(config);
     myLayout.registerComponent("reacttest", fancy_1.Fancy);
     myLayout.init();
     window.addEventListener("unload", function (e) {
-        electron_json_storage_1.default.set("glCurrentLayout", JSON.stringify(myLayout.toConfig()), function (e) {
-            if (e) {
-                throw e;
-            }
-        });
+        onSaveLayout();
     });
     // メニュー
     electron_1.default.remote.Menu.setApplicationMenu(electron_1.default.remote.Menu.buildFromTemplate([
@@ -68,7 +73,10 @@ electron_json_storage_1.default.get("glCurrentLayout", function (e, d) {
                         myLayout.root.contentItems[0].addChild({
                             type: "react-component",
                             component: "reacttest",
-                            props: { id: idGenerator.makeUniqueId() }
+                            props: {
+                                id: idGenerator.makeUniqueId(),
+                                saveLayout: onSaveLayout
+                            }
                         });
                     }
                 }

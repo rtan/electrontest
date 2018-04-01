@@ -1,16 +1,18 @@
-export default interface Config{
+export default interface Config {
     dataConfigs: DataConfig[];
 }
 
-interface DataConfig {
+export interface DataConfig {
     dataName: string;
     reader: string;
     writer: string;
     columns: DataColumn[]
 }
-interface DataColumn {
+
+export interface DataColumn {
     id: string;
     name: string;
     minWidth: number;
     maxWidth: number;
+    type: string;
 }

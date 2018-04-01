@@ -1,0 +1,138 @@
+{
+  "types": [
+    {
+      "id": "Type",
+      "names": [
+        "string",
+        "number",
+        "boolean"
+      ]
+    }
+  ],
+  "dataConfigs": [
+    {
+      "dataName": "ワーク",
+      "reader": "work/workReader",
+      "writer": "work/workWriter",
+      "columns": [
+        {
+          "id": "Node",
+          "name": "ノード",
+          "minWidth": 250,
+          "maxWidth": 250
+        },
+        {
+          "id": "Name",
+          "name": "名称",
+          "minWidth": 180,
+          "maxWidth": 400,
+          "type": "Text"
+        },
+        {
+          "id": "Cs",
+          "name": "C#",
+          "minWidth": 30,
+          "maxWidth": 30,
+          "type": "CheckBox"
+        },
+        {
+          "id": "Php",
+          "name": "PHP",
+          "minWidth": 30,
+          "maxWidth": 30,
+          "type": "CheckBox"
+        },
+        {
+          "id": "Type",
+          "name": "型",
+          "minWidth": 60,
+          "maxWidth": 60,
+          "type": "Type"
+        },
+        {
+          "id": "Min",
+          "name": "最小値",
+          "minWidth": 70,
+          "maxWidth": 70,
+          "type": "Number"
+        },
+        {
+          "id": "Max",
+          "name": "最大値",
+          "minWidth": 70,
+          "maxWidth": 70,
+          "type": "Number"
+        },
+        {
+          "id": "Def",
+          "name": "ﾃﾞﾌｫﾙﾄ値",
+          "minWidth": 70,
+          "maxWidth": 70,
+          "type": "Number"
+        }
+      ]
+    },
+    {
+      "dataName": "マスタ",
+      "reader": "ms/msReader",
+      "writer": "ms/msWriter",
+      "columns": [
+        {
+          "id": "Node",
+          "name": "ノード",
+          "minWidth": 250,
+          "maxWidth": 250
+        },
+        {
+          "id": "Name",
+          "name": "名称",
+          "minWidth": 180,
+          "maxWidth": 400,
+          "type": "Text"
+        },
+        {
+          "id": "Cs",
+          "name": "C#",
+          "minWidth": 30,
+          "maxWidth": 30,
+          "type": "CheckBox"
+        },
+        {
+          "id": "Php",
+          "name": "PHP",
+          "minWidth": 30,
+          "maxWidth": 30,
+          "type": "CheckBox"
+        },
+        {
+          "id": "Type",
+          "name": "型",
+          "minWidth": 60,
+          "maxWidth": 60,
+          "type": "Type"
+        },
+        {
+          "id": "Min",
+          "name": "最小値",
+          "minWidth": 70,
+          "maxWidth": 70,
+          "type": "Number"
+        },
+        {
+          "id": "Max",
+          "name": "最大値",
+          "minWidth": 90,
+          "maxWidth": 90,
+          "type": "Number"
+        },
+        {
+          "id": "Def",
+          "name": "ﾃﾞﾌｫﾙﾄ値",
+          "minWidth": 70,
+          "maxWidth": 70,
+          "type": "Number"
+        }
+      ]
+    }
+  ]
+}
