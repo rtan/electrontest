@@ -83,6 +83,17 @@ electron_json_storage_1.default.get("glCurrentLayout", function (e, d) {
             ]
         },
         {
+            label: 'ウィンドウ',
+            submenu: [
+                {
+                    label: '現在のレイアウトを保存',
+                    click: function () {
+                        onSaveLayout();
+                    }
+                },
+            ]
+        },
+        {
             label: 'デバッグ',
             submenu: [
                 { role: 'reload' },

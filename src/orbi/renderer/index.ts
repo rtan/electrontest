@@ -87,6 +87,17 @@ storage.get("glCurrentLayout", (e, d) => {
                 ]
             },
             {
+                label: 'ウィンドウ',
+                submenu: [
+                    {
+                        label: '現在のレイアウトを保存',
+                        click() {
+                            onSaveLayout();
+                        }
+                    },
+                ]
+            },
+            {
                 label: 'デバッグ',
                 submenu: [
                     {role: 'reload'},

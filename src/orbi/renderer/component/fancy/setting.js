@@ -40,8 +40,15 @@ var Setting = /** @class */ (function (_super) {
         var dlg = document.getElementById("settingsDialog_" + this.props.id);
         dlg.show();
     };
-    Setting.prototype.render = function () {
+    Setting.prototype.getSettings = function () {
         var _this = this;
+        var settings = {};
+        this.config.columns.forEach(function (column) {
+            settings["settings" + column.id + "Disp"] = $(_this.refs[column.id]).prop("checked");
+        });
+        return settings;
+    };
+    Setting.prototype.render = function () {
         var state = this.props.glContainer.getState();
         return (React.createElement("dialog", { id: "settingsDialog_" + this.props.id },
             React.createElement("form", { method: "dialog" },
@@ -61,7 +68,7 @@ var Setting = /** @class */ (function (_super) {
                         return React.createElement("tr", { key: i },
                             React.createElement("td", null, column.name),
                             React.createElement("td", null,
-                                React.createElement("input", { id: "settings" + column.id + "Disp_" + _this.props.id, type: "checkbox", defaultChecked: checked })));
+                                React.createElement("input", { ref: column.id, type: "checkbox", defaultChecked: checked })));
                     }))),
                 React.createElement("div", { style: { paddingTop: "10px", textAlign: "center" } },
                     React.createElement("button", { id: "settingsOk", type: "submit", value: "ok", style: { width: "100px" }, onClick: this.props.onOk }, "Ok"),

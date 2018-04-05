@@ -31,6 +31,14 @@ export class Setting extends React.Component<SettingProps, SettingState> {
         dlg.show();
     }
 
+    public getSettings() {
+        let settings: { [key: string]: boolean } = {};
+        this.config.columns.forEach(column => {
+            settings["settings" + column.id + "Disp"] = $(this.refs[column.id]).prop("checked");
+        });
+        return settings;
+    }
+
     render() {
         const state = this.props.glContainer.getState();
         return (
@@ -54,7 +62,7 @@ export class Setting extends React.Component<SettingProps, SettingState> {
                             }
                             return <tr key={i}>
                                 <td>{column.name}</td>
-                                <td><input id={`settings${column.id}Disp_${this.props.id}`} type="checkbox"
+                                <td><input ref={column.id} type="checkbox"
                                            defaultChecked={checked}/></td>
                             </tr>
                         })}
