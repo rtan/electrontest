@@ -36,17 +36,32 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
 /******/ 	};
 /******/
 /******/ 	// define __esModule on exports
 /******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
 /******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -75,11 +90,11 @@
 /*!*******************************!*\
   !*** ./src/orbi/main/main.ts ***!
   \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: myapp */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("\r\nObject.defineProperty(exports, \"__esModule\", { value: true });\r\nvar electron_1 = __webpack_require__(/*! electron */ \"electron\");\r\nvar MyApp = /** @class */ (function () {\r\n    function MyApp(app) {\r\n        var _this = this;\r\n        this.app = app;\r\n        this.mainWindow = null;\r\n        this.app.on('window-all-closed', function () {\r\n            if (process.platform != 'darwin') {\r\n                setTimeout(function () {\r\n                    _this.app.quit();\r\n                }, 50);\r\n            }\r\n        });\r\n        this.app.on('ready', function () {\r\n            _this.mainWindow = new electron_1.BrowserWindow({ width: 1500, height: 2000, });\r\n            _this.mainWindow.on('closed', function (event) {\r\n                _this.mainWindow = null;\r\n            });\r\n            _this.mainWindow.loadURL(\"file://\" + app.getAppPath() + \"/dist/index.html\");\r\n            _this.mainWindow.webContents.openDevTools();\r\n        });\r\n    }\r\n    return MyApp;\r\n}());\r\nexports.myapp = new MyApp(electron_1.app);\r\n\n\n//# sourceURL=webpack:///./src/orbi/main/main.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"myapp\", function() { return myapp; });\n/* harmony import */ var electron__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! electron */ \"electron\");\n/* harmony import */ var electron__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(electron__WEBPACK_IMPORTED_MODULE_0__);\n\r\nclass MyApp {\r\n    constructor(app) {\r\n        this.app = app;\r\n        this.mainWindow = null;\r\n        this.app.on('window-all-closed', () => {\r\n            if (process.platform != 'darwin') {\r\n                setTimeout(() => {\r\n                    this.app.quit();\r\n                }, 50);\r\n            }\r\n        });\r\n        this.app.on('ready', () => {\r\n            this.mainWindow = new electron__WEBPACK_IMPORTED_MODULE_0__[\"BrowserWindow\"]({ width: 1500, height: 2000, });\r\n            this.mainWindow.on('closed', (event) => {\r\n                this.mainWindow = null;\r\n            });\r\n            this.mainWindow.loadURL(`file://${app.getAppPath()}/dist/index.html`);\r\n            this.mainWindow.webContents.openDevTools();\r\n        });\r\n    }\r\n}\r\nconst myapp = new MyApp(electron__WEBPACK_IMPORTED_MODULE_0__[\"app\"]);\r\n\n\n//# sourceURL=webpack:///./src/orbi/main/main.ts?");
 
 /***/ }),
 

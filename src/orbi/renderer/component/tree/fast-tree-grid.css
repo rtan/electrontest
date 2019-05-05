@@ -1,0 +1,78 @@
+
+.main {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 10pt;
+  background-color: white;
+  border: black 0px solid;
+  line-height:1.1;
+}
+
+.headerTable{
+  border: black 1px solid;
+  border-collapse: collapse;
+}
+.headerTable td{
+  resize: horizontal;
+  overflow: hidden;
+  border: black 1px solid;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.bodyTable {
+  table-layout: fixed;
+  border: black 0px solid;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+.bodyTable td,th{
+  height: 100%;
+  overflow: hidden;
+  border: black 0px none;
+  padding: 0px;
+  border-spacing: 0px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 20px;
+  box-sizing: border-box;
+}
+.bodyTable input {
+  line-height: 1;
+}
+.scrollDiv {
+  display: block;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  border: black 1px solid;
+}
+.cellInputText {
+  width: 100%;
+  border-width: 0px;
+  background-color: transparent;
+}
+.cellInputTextEditing {
+  width: 100%;
+  border-width: 1px;
+  background-color: #FFFFCC;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=text]::-webkit-inner-spin-button,
+input[type=text]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=datetime-local]::-webkit-inner-spin-button,
+input[type=datetime-local]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.ui.selection.dropdown{
+  white-space: nowrap !important; /* 勝手に高さが変わらないようにする */
+}

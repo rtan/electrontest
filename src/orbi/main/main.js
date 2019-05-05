@@ -1,28 +1,24 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var electron_1 = require("electron");
-var MyApp = /** @class */ (function () {
-    function MyApp(app) {
-        var _this = this;
+import { app, BrowserWindow } from 'electron';
+class MyApp {
+    constructor(app) {
         this.app = app;
         this.mainWindow = null;
-        this.app.on('window-all-closed', function () {
+        this.app.on('window-all-closed', () => {
             if (process.platform != 'darwin') {
-                setTimeout(function () {
-                    _this.app.quit();
+                setTimeout(() => {
+                    this.app.quit();
                 }, 50);
             }
         });
-        this.app.on('ready', function () {
-            _this.mainWindow = new electron_1.BrowserWindow({ width: 1500, height: 2000, });
-            _this.mainWindow.on('closed', function (event) {
-                _this.mainWindow = null;
+        this.app.on('ready', () => {
+            this.mainWindow = new BrowserWindow({ width: 1500, height: 2000, });
+            this.mainWindow.on('closed', (event) => {
+                this.mainWindow = null;
             });
-            _this.mainWindow.loadURL("file://" + app.getAppPath() + "/dist/index.html");
-            _this.mainWindow.webContents.openDevTools();
+            this.mainWindow.loadURL(`file://${app.getAppPath()}/dist/index.html`);
+            this.mainWindow.webContents.openDevTools();
         });
     }
-    return MyApp;
-}());
-exports.myapp = new MyApp(electron_1.app);
+}
+export const myapp = new MyApp(app);
 //# sourceMappingURL=main.js.map

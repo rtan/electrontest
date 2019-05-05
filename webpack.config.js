@@ -24,7 +24,7 @@ module.exports = [
     },
     {
         mode: "development",
-        entry: "./src/orbi/renderer/index.ts",
+        entry: "./src/orbi/renderer/index.tsx",
         output: {
             filename: "renderer.js"
         },
@@ -51,6 +51,10 @@ module.exports = [
                     {
                         test: /\.(jpg|png|gif)$/,
                         use: "url-loader",
+                    },
+                    {
+                        test: /\.(woff|woff2|eot|ttf|svg)$/,
+                        loader: 'file-loader',
                     }
                 ]
             },

@@ -1,65 +1,84 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-var electron_1 = __importDefault(require("electron"));
-var golden_layout_1 = __importDefault(require("golden-layout"));
-var fancy_1 = require("orbi/renderer/component/fancy/fancy");
-var idGenerator_1 = __importDefault(require("orbi/renderer/services/idGenerator/idGenerator"));
-var react_1 = __importDefault(require("react"));
-var react_dom_1 = __importDefault(require("react-dom"));
-var electron_json_storage_1 = __importDefault(require("electron-json-storage"));
-var jquery_1 = __importDefault(require("jquery"));
-require("reflect-metadata");
-var inversify_config_1 = require("../inversify.config");
-require("golden-layout/src/css/goldenlayout-base.css");
-require("golden-layout/src/css/goldenlayout-light-theme.css");
-window.React = react_1.default;
-window.ReactDOM = react_dom_1.default;
-window.jQuery = jquery_1.default;
-window.$ = jquery_1.default;
+import electron from "electron";
+import GoldenLayout from "golden-layout";
+import IdGenerator from "orbi/renderer/services/idGenerator/idGenerator";
+import React, { createRef } from "react";
+import ReactDOM from "react-dom";
+import storage from "electron-json-storage";
+import jQuery from "jquery";
+import "reflect-metadata";
+import { container } from "../inversify.config";
+import "golden-layout/src/css/goldenlayout-base.css";
+import "golden-layout/src/css/goldenlayout-light-theme.css";
+import FastTreeGrid from "./component/tree/FastTreeGrid";
+import { testData } from "./component/tree/FastTreeGridTest";
+window.React = React;
+window.ReactDOM = ReactDOM;
+window.jQuery = jQuery;
+window.$ = jQuery;
 // todo use di
-var idGenerator = inversify_config_1.container.get(idGenerator_1.default);
+const idGenerator = container.get(IdGenerator);
 // -------------------------------
 // golden-layout
-electron_json_storage_1.default.get("glCurrentLayout", function (e, d) {
-    var myLayout = null;
+storage.get("glCurrentLayout", (e, d) => {
+    let myLayout = null;
     // todo propsもセーブされるが関数が保存されず次回エラー
-    var onSaveLayout = function () {
-        electron_json_storage_1.default.set("glCurrentLayout", JSON.stringify(myLayout.toConfig()), function (e) {
+    const onSaveLayout = () => {
+        storage.set("glCurrentLayout", JSON.stringify(myLayout.toConfig()), (e) => {
             if (e) {
                 throw e;
             }
         });
     };
-    var config = {};
+    d = {}; // todo テスト中はレイアウト保存しない
+    let config = {};
     if (Object.keys(d).length > 0) {
         config = JSON.parse(d);
     }
     else {
         config = {
-            content: [{
-                    type: 'react-component',
-                    component: 'reacttest',
-                    props: { id: idGenerator.makeUniqueId(), saveLayout: onSaveLayout },
-                }]
+            content: [
+                { type: 'row', content: [
+                        { type: 'column', content: [] },
+                        { type: 'column', content: [] }
+                    ] },
+            ]
         };
     }
-    myLayout = new golden_layout_1.default(config);
-    myLayout.registerComponent("reacttest", fancy_1.Fancy);
+    myLayout = new GoldenLayout(config);
+    myLayout.registerComponent("tree", FastTreeGrid);
+    let data = testData();
+    let tree;
+    let searchResulttree;
+    myLayout.registerComponent("test1", function (container, state) {
+        const r = createRef();
+        const o = React.createElement(FastTreeGrid, { ref: r, rowHeight: 21, tree: data, searchResultTreeGrid: null });
+        ReactDOM.render(o, container.getElement().get(0));
+        searchResulttree = r.current;
+    });
+    myLayout.registerComponent("test2", function (container, state) {
+        const r = createRef();
+        const o = React.createElement(FastTreeGrid, { ref: r, rowHeight: 21, tree: testData(), searchResultTreeGrid: searchResulttree });
+        ReactDOM.render(o, container.getElement().get(0));
+        tree = r.current;
+    });
+    myLayout.registerComponent("test3", function (container, state) {
+        tree.createDetailComponentByElement(container.getElement().get(0));
+    });
     myLayout.init();
-    window.addEventListener("unload", function (e) {
+    myLayout.root.contentItems[0].contentItems[1].addChild({ type: "component", componentName: "test1" });
+    myLayout.root.contentItems[0].contentItems[0].addChild({ type: "component", componentName: "test2" });
+    myLayout.root.contentItems[0].contentItems[1].addChild({ type: "component", componentName: "test3" });
+    window.addEventListener("unload", (e) => {
         onSaveLayout();
     });
     // メニュー
-    electron_1.default.remote.Menu.setApplicationMenu(electron_1.default.remote.Menu.buildFromTemplate([
+    electron.remote.Menu.setApplicationMenu(electron.remote.Menu.buildFromTemplate([
         {
             label: 'ファイル',
             submenu: [
                 {
                     label: '終了',
-                    click: function () {
+                    click() {
                     }
                 },
             ]
@@ -69,7 +88,7 @@ electron_json_storage_1.default.get("glCurrentLayout", function (e, d) {
             submenu: [
                 {
                     label: 'React',
-                    click: function () {
+                    click() {
                         myLayout.root.contentItems[0].addChild({
                             type: "react-component",
                             component: "reacttest",
@@ -87,7 +106,7 @@ electron_json_storage_1.default.get("glCurrentLayout", function (e, d) {
             submenu: [
                 {
                     label: '現在のレイアウトを保存',
-                    click: function () {
+                    click() {
                         onSaveLayout();
                     }
                 },

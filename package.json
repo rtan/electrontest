@@ -23,10 +23,15 @@
     "less-loader": "^4.1.0",
     "style-loader": "^0.20.3",
     "ts-loader": "^4.0.1",
-    "typescript": "^2.7.2",
     "url-loader": "^1.0.1",
-    "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12"
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.1",
+
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.13.0",
+    "@types/react": "^16.8.10",
+    "@types/react-dom": "^16.8.3",
+    "typescript": "^3.4.1"
   },
   "dependencies": {
     "@types/jquery": "^3.3.1",
@@ -44,6 +49,17 @@
     "react-dom": "^16.2.0",
     "reflect-metadata": "^0.1.12",
     "store": "^2.0.12",
-    "ui-contextmenu": "^1.18.1"
+    "ui-contextmenu": "^1.18.1",
+
+    "@types/nanoid": "^1.2.1",
+    "@types/toastr": "^2.1.37",
+    "@types/underscore": "^1.8.14",
+    "nanoid": "^2.0.1",
+    "react-scripts-ts": "3.1.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.86.0",
+    "toastr": "^2.1.4",
+    "ts-keycode-enum": "^1.0.6",
+    "underscore": "^1.9.1"
   }
 }
