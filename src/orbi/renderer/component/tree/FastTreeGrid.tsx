@@ -4,7 +4,7 @@ import * as _ from 'underscore';
 //import {Column, FastTreeGridData as Tree, FastTreeGridNodeData as NodeProperty} from "./FastTreeGridData";
 import {DragState, FastTreeGridRow as Row} from "./FastTreeGridRow";
 import {bigger, removeUnit, smaller} from "../../common/Util";
-import {ElementResizeChecker, StopWatch} from "../../common/Unclassified";
+import {ClipboardData, ElementResizeChecker, StopWatch} from "../../common/Unclassified";
 import {Key} from 'ts-keycode-enum';
 import {FastTreeGridDefine, FastTreeGridDefine as Define} from "./FastTreeGridDefine";
 import {
@@ -79,6 +79,8 @@ class FastTreeGrid extends React.Component<IProps, IState> {
     ]);
     private onKeyUpWithCtrl: Map<Key, (e:React.KeyboardEvent) => void> = new Map<Key, (e:React.KeyboardEvent) => void>([
         [Key.S, e => this.tree.save() ],
+        [Key.C, e => this.copyHandler() ],
+        [Key.V, e => this.pasteHandler() ],
     ]);
 
     constructor(props: IProps){
@@ -232,7 +234,7 @@ class FastTreeGrid extends React.Component<IProps, IState> {
         });
     }
 
-    private readonly columnWidths = [254,230,190,180];
+    private readonly columnWidths = [220,180,190,180];
 
     private resetColWidths(){
         // const tableWidth = this.ref.root!.getBoundingClientRect().width - Define.table.scrollBarWidth;
@@ -280,13 +282,16 @@ class FastTreeGrid extends React.Component<IProps, IState> {
 
         // todo 重そう とりあえずドラッグ中はupdateしない
         if(this.detail && !this.dragging){
-            const nv = this.findSelectedRow().nodeView;
-            if(nv) {
-                const n = this.findSelectedRow().nodeView.node;
-                if (n.data.nodeType == NodeType.NodeEntity || n.data.nodeType == NodeType.NodeUniRefEntity) {
-                    this.detail.update(n);
-                } else if (n.data.nodeType == NodeType.NodeProperty || n.data.nodeType == NodeType.NodeEnumValue) {
-                    this.detail.update(this.tree.nodes.get(nv.parentId!)!);
+            const row = this.findSelectedRow();
+            if(row) {
+                const nv = this.findSelectedRow().nodeView;
+                if (nv) {
+                    const n = this.findSelectedRow().nodeView.node;
+                    if (n.data.nodeType == NodeType.NodeEntity || n.data.nodeType == NodeType.NodeUniRefEntity) {
+                        this.detail.update(n);
+                    } else if (n.data.nodeType == NodeType.NodeProperty || n.data.nodeType == NodeType.NodeEnumValue) {
+                        this.detail.update(this.tree.nodes.get(nv.parentId!)!);
+                    }
                 }
             }
         }
@@ -496,25 +501,30 @@ class FastTreeGrid extends React.Component<IProps, IState> {
         }
     }
 
-    private copyHandler(e: React.ClipboardEvent){
+    private copyHandler(e: React.ClipboardEvent|null = null){
         // todo 複数選択行コピー対応
-        e.clipboardData.setData("text", this.findSelectedRow().nodeView!.node.serialize());
+        if(e) {
+            e.clipboardData.setData("text", this.findSelectedRow().nodeView!.node.serialize());
+            e.preventDefault();
+        }
+        else
+            ClipboardData.set("text", this.findSelectedRow().nodeView!.node.serialize());
         toastr.success("コピーしました。(CTRL+Vでペースト)");
-        e.preventDefault();
     }
 
     // todo カット対応
-    private pasteHandler(e: React.ClipboardEvent){
-        const node = FastTreeGridNodeData.deserialize(e.clipboardData.getData("text"));
+    private pasteHandler(e: React.ClipboardEvent|null = null){
+        const node = FastTreeGridNodeData.deserialize(e ? e.clipboardData.getData("text") : ClipboardData.get("text"));
+        if(e) e.preventDefault();
+
         // todo 選択してない時どうなる
         const parentId = this.findSelectedRow().nodeView.node.isHoldableChilds() ? this.findSelectedRow().nodeView.node.id : this.findSelectedRow().nodeView.parentId;
         const nodeView = new FastTreeGridViewNodeData(node, parentId, 0);
         this.copyNode(nodeView, parentId!, this.findSelectedRow().nodeView);
-        e.preventDefault();
     }
 
     private handleSearch(cond: SearchCondition){
-        this.view.filter.fn = (node)=>{
+        this.view.filter.fn = !cond.hasContidion() ? null : (node)=>{
             if(cond.searchText.startsWith("entity:")){
                 // 対象のエンティティをフルネームで検索(例: Ws.Common.Card)
                 const fullName = cond.searchText.replace("entity:", "");
@@ -546,6 +556,9 @@ class FastTreeGrid extends React.Component<IProps, IState> {
             }
             return true;
         };
+        // ノード種別絞り込みの場合は子は表示しない（エンティティ絞り込みのときにプロパティが出てしまうため）
+        this.view.filter.isDispChilds = cond.nodeTypes.length == 0;
+
         this.view.filter.exec();
         this.updateVisibleNodesCache();
     }
@@ -629,7 +642,6 @@ class FastTreeGrid extends React.Component<IProps, IState> {
                                      view={this.view} onSelected={() => this.update()} onEditEnd={() => this.update()}
                                      onDrag={(st, r, b, e) => this.handleDrag(st, r, b, e)} treeId={this.treeId}
                                      onDropValueType={(r, e) => this.handlerNodeValueTypeDrop(r, e)}
-                                     onCopy={e => this.copyHandler(e)} onPaste={e => this.pasteHandler(e)}
                                      onSearch={cond => this.props.searchResultTreeGrid ? this.props.searchResultTreeGrid.handleSearch(cond) : this.handleSearch(cond)}
                                      isDetail={false}
                                 />

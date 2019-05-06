@@ -67,7 +67,7 @@ export class FastTreeGridData {
     public nodes: NodeMap = new UndoMap<Id, Node>();
 
     public rootNodeId: Id = "root";
-    public dataFilePath: string = "d2";
+    public dataFilePath: string = "data.json";
 
     constructor(){
         const rootNode = FastTreeGridNodeData.newGroup();
@@ -96,13 +96,29 @@ export class FastTreeGridData {
     public rootNode = this.nodes.get(this.rootNodeId)!;
 
     public save(){
+        const fs = require('fs');
+        if(fs) {
+            fs.writeFileSync(this.dataFilePath, JSON.stringify([...this.nodes.values()].map(n => n.serialize())));
+        }
+        else {
+            localStorage.setItem(this.dataFilePath, JSON.stringify([...this.nodes.values()].map(n => n.serialize())));
+        }
         localStorage.setItem(this.dataFilePath, JSON.stringify([...this.nodes.values()].map(n => n.serialize())));
         toastr.success("セーブが完了しました。");
     }
     public static load(dataFilePath: string){
         const r = FastTreeGridData.newTree();
         r.dataFilePath = dataFilePath;
-        const json = localStorage.getItem(dataFilePath);
+        const fs = require('fs');
+        let json = "";
+        if(fs){
+            if(fs.existsSync(dataFilePath)){
+                json = fs.readFileSync(dataFilePath);
+            }
+        }
+        else{
+            json = localStorage.getItem(dataFilePath);
+        }
         if(!json) return r;
         console.log(json);
         const obj = JSON.parse(json);
@@ -480,6 +496,7 @@ export class FastTreeGridViewData {
         constructor(private parent: View){}
         public fn: ((n: Node) => boolean) | null; // 検索処理登録
         public resultNodes: Map<Id, Node> | null; // 検索後のNode[]
+        public isDispChilds: boolean;
         public exec(){
             if(this.fn != null) {
                 this.resultNodes = new Map<Id, Node>();
@@ -487,7 +504,8 @@ export class FastTreeGridViewData {
                     if(this.fn!(n)) {
                         this.set(n);
                         // todo とりあえず一段下までは表示
-                        n.childIds.forEach(id => this.resultNodes!.set(id, this.parent.tree.nodes.get(id)!));
+                        if(this.isDispChilds)
+                            n.childIds.forEach(id => this.resultNodes!.set(id, this.parent.tree.nodes.get(id)!));
                     }
                 });
             } else

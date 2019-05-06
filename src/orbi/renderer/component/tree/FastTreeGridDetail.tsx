@@ -226,7 +226,7 @@ class FastTreeGridDetail extends React.Component<IProps, IState> {
                                               options={this.getDDItemColumn()} onChange={(e, data)=>this.handleChangePrimaryKey(data)} value={this.node.data.dbTableDetailData().primaryKeyNodeIds}/>
                                 </div>
                                 {[...this.node.data.dbTableDetailData().indexNodeIds.keys(), ""].map((indexName, i)=>{
-                                    return <div className="ui labeled input" style={{width:"100%"}}>
+                                    return <div key={i} className="ui labeled input" style={{width:"100%"}}>
                                         <div className="ui label">
                                             インデックス
                                         </div>
@@ -276,7 +276,6 @@ class FastTreeGridDetail extends React.Component<IProps, IState> {
                                  view={this.props.view} onSelected={() => this.update(this.node)} onEditEnd={() => {}}
                                  onDrag={(st, r, b, e) => {}} treeId={this.treeId}
                                  onDropValueType={(r, e) => {}}
-                                 onCopy={e => {}} onPaste={e => {}}
                                  onSearch={cond => {}}
                                  isDetail={true}
                             />

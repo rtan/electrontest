@@ -1,6 +1,6 @@
 import * as _ from "underscore";
 import { Column, FastTreeGridData as Tree } from "./FastTreeGridViewData2";
-export const testData = (dataFilePath = "d2") => {
+export const testData = (dataFilePath = "data.json") => {
     const data = (i) => { return { id: i, _name: "node-" + i, _desc: "desc" + i }; };
     const nodes = (start, stop) => _.range(start, stop).map(i => data(i));
     const toMap = (d) => {

@@ -32,6 +32,18 @@ export class ElementResizeChecker{
     get width() { return this._width }
 }
 
+// クリップボード用。
+// デフォルトの機能だとコピーイベントを起こさないといけず、うまく動作しないときがあり原因が分からないので使わない。
+export class ClipboardData{
+    private static data:Map<string, string> = new Map<string, string>();
+    public static get(name: string){
+        return this.data.get(name);
+    }
+    public static set(name: string, value: string){
+        return this.data.set(name, value);
+    }
+}
+
 export class PrimitiveObservable<T extends number|string|boolean|void>{
     private maxId = 0;
     private subscriber: {[id: number]: Action<T>} = {};

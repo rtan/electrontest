@@ -8,7 +8,7 @@ import {
     NodeValueType
 } from "./FastTreeGridViewData2";
 
-export const testData = (dataFilePath: string = "d2") =>{
+export const testData = (dataFilePath: string = "data.json") =>{
 
     const data = (i:number) => { return {id: i, _name:"node-"+i, _desc:"desc"+i}};
     const nodes = (start: number, stop: number) => _.range(start, stop).map(i => data(i));

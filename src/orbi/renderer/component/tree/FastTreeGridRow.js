@@ -133,7 +133,7 @@ export class FastTreeGridRow extends React.Component {
                     React.createElement("span", { style: { width: "100%" } }, this.nodeView.node.data.detail.toSummaryString() || "-"));
             };
             return React.createElement(React.Fragment, null,
-                React.createElement("tr", { onCopy: e => this.props.onCopy(e), onPaste: e => this.props.onPaste(e), ref: e => this.ref.tr = e, style: { height: this.props.height, backgroundColor: this.nodeView != null && this.state.isSelected ? "#C4E6FF" : "transparent" } }, this.nodeView == null ?
+                React.createElement("tr", { ref: e => this.ref.tr = e, style: { height: this.props.height, backgroundColor: this.nodeView != null && this.state.isSelected ? "#C4E6FF" : "transparent" } }, this.nodeView == null ?
                     React.createElement("td", null) :
                     React.createElement(React.Fragment, null,
                         React.createElement("td", { ref: e => this.ref.td[0] = e, style: { textAlign: "left" }, draggable: true, onDragStart: e => this.handleDragStart(e), onDragOver: (e) => this.handleDragOver(e), onDrop: (e) => this.handleDrop(e), onDragLeave: e => this.handleDragLeave(e), onDragEnter: e => this.handleDragEnter(e) },

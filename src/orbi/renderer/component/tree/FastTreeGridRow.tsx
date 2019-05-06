@@ -27,8 +27,6 @@ interface IProps{
     onEditEnd: ()=>void;
     onDrag: (state: DragState, row: FastTreeGridRow, isBorder: boolean, e: React.DragEvent<HTMLDivElement>)=>void;
     onDropValueType: (row: FastTreeGridRow, e: React.DragEvent<HTMLDivElement>)=>void;
-    onCopy: (e: React.ClipboardEvent)=>void;
-    onPaste: (e: React.ClipboardEvent)=>void;
     onSearch: (cond: SearchCondition)=>void;
     isDetail: boolean;
 }
@@ -332,7 +330,7 @@ export class FastTreeGridRow extends React.Component<IProps, IState> {
             return <td ref={e=>this.ref.td[3]=e!} title={this.nodeView.node.data.detail.toSummaryString() || "-"}><span style={{width:"100%"}}>{this.nodeView.node.data.detail.toSummaryString() || "-"}</span></td>
         };
         return <React.Fragment>
-            <tr onCopy={e=>this.props.onCopy(e)} onPaste={e=>this.props.onPaste(e)} ref={e=>this.ref.tr=e} style={{height: this.props.height, backgroundColor:this.nodeView != null && this.state.isSelected ?  "#C4E6FF" : "transparent"}}>
+            <tr ref={e=>this.ref.tr=e} style={{height: this.props.height, backgroundColor:this.nodeView != null && this.state.isSelected ?  "#C4E6FF" : "transparent"}}>
                 {this.nodeView == null ?
                     <td/> :
                     <React.Fragment>

@@ -197,7 +197,7 @@ class FastTreeGridDetail extends React.Component {
                                         React.createElement("div", { className: "ui label" }, "\u4E3B\u30AD\u30FC"),
                                         React.createElement(Dropdown, { ref: e => this.ref.primaryKeyDropDown = e, placeholder: '\u4E3B\u30AD\u30FC', fluid: true, multiple: true, search: true, selection: true, style: { width: "80%" }, options: this.getDDItemColumn(), onChange: (e, data) => this.handleChangePrimaryKey(data), value: this.node.data.dbTableDetailData().primaryKeyNodeIds })),
                                     [...this.node.data.dbTableDetailData().indexNodeIds.keys(), ""].map((indexName, i) => {
-                                        return React.createElement("div", { className: "ui labeled input", style: { width: "100%" } },
+                                        return React.createElement("div", { key: i, className: "ui labeled input", style: { width: "100%" } },
                                             React.createElement("div", { className: "ui label" }, "\u30A4\u30F3\u30C7\u30C3\u30AF\u30B9"),
                                             React.createElement("div", { style: { width: "20%", minWidth: "150px", whiteSpace: "nowrap", maxWidth: "150px", float: "left" } },
                                                 React.createElement("input", { className: "ui input", type: "text", placeholder: "インデックス名", style: { width: "100%", padding: "6px" }, value: indexName, onChange: (e) => this.handleChangeIndexName(e, i) })),
@@ -220,7 +220,7 @@ class FastTreeGridDetail extends React.Component {
                     React.createElement("thead", null,
                         React.createElement("tr", null, this.getColumns(this.nodeDataCategory).map((c, i) => React.createElement("th", { key: i, ref: e => this.ref.bodyCol[i] = e })))),
                     React.createElement("tbody", null, this.propNodes.map((n, i) => React.createElement(React.Fragment, { key: i },
-                        React.createElement(Row, { key: "row" + i, ref: e => this.ref.rows[i] = e, height: this.props.rowHeight, onUpdate: () => { }, tree: this.props.tree, view: this.props.view, onSelected: () => this.update(this.node), onEditEnd: () => { }, onDrag: (st, r, b, e) => { }, treeId: this.treeId, onDropValueType: (r, e) => { }, onCopy: e => { }, onPaste: e => { }, onSearch: cond => { }, isDetail: true })))))));
+                        React.createElement(Row, { key: "row" + i, ref: e => this.ref.rows[i] = e, height: this.props.rowHeight, onUpdate: () => { }, tree: this.props.tree, view: this.props.view, onSelected: () => this.update(this.node), onEditEnd: () => { }, onDrag: (st, r, b, e) => { }, treeId: this.treeId, onDropValueType: (r, e) => { }, onSearch: cond => { }, isDetail: true })))))));
     }
 }
 class Ref {

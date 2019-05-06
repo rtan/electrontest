@@ -118,6 +118,10 @@ export class SearchCondition{
         this.nodeTypes = [];
         this.searchText = "";
     }
+
+    public hasContidion(){
+        return this.nodeDataCategories.length > 0 || this.nodeTypes.length > 0 || this.searchText
+    }
 }
 
 export default FastTreeGridHeader;

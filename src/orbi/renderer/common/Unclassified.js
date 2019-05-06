@@ -23,6 +23,17 @@ export class ElementResizeChecker {
     get height() { return this._height; }
     get width() { return this._width; }
 }
+// クリップボード用。
+// デフォルトの機能だとコピーイベントを起こさないといけず、うまく動作しないときがあり原因が分からないので使わない。
+export class ClipboardData {
+    static get(name) {
+        return this.data.get(name);
+    }
+    static set(name, value) {
+        return this.data.set(name, value);
+    }
+}
+ClipboardData.data = new Map();
 export class PrimitiveObservable {
     constructor(_value) {
         this._value = _value;

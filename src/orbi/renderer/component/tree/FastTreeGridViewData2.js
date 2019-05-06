@@ -44,7 +44,7 @@ export class FastTreeGridData {
         // set, redo, undo は直接呼ばないこと！同一データの複数ツリー表示時に同期がとれなくなるため。
         this.nodes = new UndoMap();
         this.rootNodeId = "root";
-        this.dataFilePath = "d2";
+        this.dataFilePath = "data.json";
         this.rootNode = this.nodes.get(this.rootNodeId);
         const rootNode = FastTreeGridNodeData.newGroup();
         rootNode.data.nodeType = NodeType.NodeGroupFixed;
@@ -68,13 +68,29 @@ export class FastTreeGridData {
         return r;
     }
     save() {
+        const fs = require('fs');
+        if (fs) {
+            fs.writeFileSync(this.dataFilePath, JSON.stringify([...this.nodes.values()].map(n => n.serialize())));
+        }
+        else {
+            localStorage.setItem(this.dataFilePath, JSON.stringify([...this.nodes.values()].map(n => n.serialize())));
+        }
         localStorage.setItem(this.dataFilePath, JSON.stringify([...this.nodes.values()].map(n => n.serialize())));
         toastr.success("セーブが完了しました。");
     }
     static load(dataFilePath) {
         const r = FastTreeGridData.newTree();
         r.dataFilePath = dataFilePath;
-        const json = localStorage.getItem(dataFilePath);
+        const fs = require('fs');
+        let json = "";
+        if (fs) {
+            if (fs.existsSync(dataFilePath)) {
+                json = fs.readFileSync(dataFilePath);
+            }
+        }
+        else {
+            json = localStorage.getItem(dataFilePath);
+        }
         if (!json)
             return r;
         console.log(json);
@@ -419,7 +435,8 @@ export class FastTreeGridViewData {
                         if (this.fn(n)) {
                             this.set(n);
                             // todo とりあえず一段下までは表示
-                            n.childIds.forEach(id => this.resultNodes.set(id, this.parent.tree.nodes.get(id)));
+                            if (this.isDispChilds)
+                                n.childIds.forEach(id => this.resultNodes.set(id, this.parent.tree.nodes.get(id)));
                         }
                     });
                 }

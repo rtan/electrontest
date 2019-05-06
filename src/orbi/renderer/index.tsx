@@ -42,47 +42,43 @@ storage.get("glCurrentLayout", (e, d) => {
     }
     else {
         config = {
+            settings: {
+                hasHeaders: false,
+            },
             content: [
                 { type: 'row', content: [
                         {type: 'column', content: []},
                         {type: 'column', content: []}
                     ]},
-                // {
-                // type: 'react-component',
-                // component: 'tree',
-                // props: {rowHeight: 21, tree: testData(), searchResultTreeGrid: null},
-                // }
             ]
         };
     }
 
     myLayout = new GoldenLayout(config);
 
-    myLayout.registerComponent("tree", FastTreeGrid);
-
     let data = testData();
     let tree: FastTreeGrid;
     let searchResulttree: FastTreeGrid;
-    myLayout.registerComponent( "test1", function( container, state ){
+    myLayout.registerComponent( "subtree", function( container, state ){
         const r = createRef<FastTreeGrid>();
         const o = <FastTreeGrid ref={r} rowHeight={21} tree={data} searchResultTreeGrid={null}/>
         ReactDOM.render(o, container.getElement().get(0));
         searchResulttree = r.current!;
     });
-    myLayout.registerComponent( "test2", function( container, state ){
+    myLayout.registerComponent( "tree", function( container, state ){
         const r = createRef<FastTreeGrid>();
-        const o = <FastTreeGrid ref={r} rowHeight={21} tree={testData()} searchResultTreeGrid={searchResulttree}/>
+        const o = <FastTreeGrid ref={r} rowHeight={21} tree={data} searchResultTreeGrid={searchResulttree}/>
         ReactDOM.render(o, container.getElement().get(0));
         tree = r.current!;
     });
-    myLayout.registerComponent( "test3", function( container, state ){
+    myLayout.registerComponent( "detail", function( container, state ){
         tree.createDetailComponentByElement(container.getElement().get(0));
     });
 
     myLayout.init();
-    myLayout.root.contentItems[0].contentItems[1].addChild({type:"component", componentName:"test1"});
-    myLayout.root.contentItems[0].contentItems[0].addChild({type:"component", componentName:"test2"});
-    myLayout.root.contentItems[0].contentItems[1].addChild({type:"component", componentName:"test3"});
+    myLayout.root.contentItems[0].contentItems[1].addChild({type:"component", componentName:"subtree", title:"サブツリー", isClosable:false});
+    myLayout.root.contentItems[0].contentItems[0].addChild({type:"component", componentName:"tree", title:"ツリー", isClosable:false});
+    myLayout.root.contentItems[0].contentItems[1].addChild({type:"component", componentName:"detail", title:"詳細", isClosable:false});
 
     window.addEventListener("unload", (e) => {
         onSaveLayout();
@@ -97,35 +93,6 @@ storage.get("glCurrentLayout", (e, d) => {
                     {
                         label: '終了',
                         click() {
-                        }
-                    },
-                ]
-            },
-            {
-                label: 'ビュー',
-                submenu: [
-                    {
-                        label: 'React',
-                        click() {
-                            myLayout.root.contentItems[0].addChild({
-                                type: "react-component",
-                                component: "reacttest",
-                                props: {
-                                    id: idGenerator.makeUniqueId(),
-                                    saveLayout: onSaveLayout
-                                }
-                            });
-                        }
-                    }
-                ]
-            },
-            {
-                label: 'ウィンドウ',
-                submenu: [
-                    {
-                        label: '現在のレイアウトを保存',
-                        click() {
-                            onSaveLayout();
                         }
                     },
                 ]
